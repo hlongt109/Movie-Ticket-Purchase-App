@@ -11,15 +11,21 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.view.WindowCompat
+import com.lhb.movieticketpurchaseapp.network.UserService
 import com.lhb.movieticketpurchaseapp.ui.theme.MovieTicketPurchaseAppTheme
+import com.lhb.movieticketpurchaseapp.view.navigator.ScreenNavigation
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        window.navigationBarColor = getColor(R.color.black)
+        window.statusBarColor = getColor(R.color.black)
+        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = false
         setContent {
             MovieTicketPurchaseAppTheme {
-
+                ScreenNavigation()
             }
         }
     }
