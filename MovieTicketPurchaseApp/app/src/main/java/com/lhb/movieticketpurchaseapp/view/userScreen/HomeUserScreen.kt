@@ -51,15 +51,25 @@ import androidx.core.view.WindowCompat
 import androidx.navigation.NavController
 import com.lhb.movieticketpurchaseapp.R
 import com.lhb.movieticketpurchaseapp.ui.theme.Inter
+import com.lhb.movieticketpurchaseapp.view.components.DropDownMenu
+import com.lhb.movieticketpurchaseapp.view.components.MovieCategory
 import com.lhb.movieticketpurchaseapp.viewmodel.MovieTypeViewModel
 import com.lhb.movieticketpurchaseapp.viewmodel.MovieViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun HomeUserScreen(navController: NavController,movieViewModel: MovieViewModel, movieTypeViewModel: MovieTypeViewModel) {
+fun HomeUserScreen(
+    navController: NavController,
+    movieViewModel: MovieViewModel,
+    movieTypeViewModel: MovieTypeViewModel
+) {
     val isHaveNotice by remember { mutableStateOf(true) }
-    val menuType by movieTypeViewModel.listMovieTypes.observeAsState(initial = emptyList())
+    val listMovies by movieViewModel.listMovies.observeAsState(emptyList())
+    val listMoviesNew by movieViewModel.listMovies.observeAsState(emptyList())
+    val listMoviesComingSoon by movieViewModel.listMovies.observeAsState(emptyList())
+    val menuType by movieTypeViewModel.listMovieCategory.observeAsState(initial = emptyList())
     val category = listOf("Home") + menuType
+    var selectedCategory = remember { category[0] }
     Scaffold(
 //        containerColor = Color(0xff171324),
 //        containerColor = Color(0xff15121e),
@@ -94,7 +104,7 @@ fun HomeUserScreen(navController: NavController,movieViewModel: MovieViewModel, 
                         contentDescription = null,
                         modifier = Modifier.size(50.dp)
                     )
-                    Box{
+                    Box {
                         Box(
                             modifier = Modifier
                                 .width(40.dp)
@@ -114,15 +124,16 @@ fun HomeUserScreen(navController: NavController,movieViewModel: MovieViewModel, 
                                 tint = Color("#ffffff".toColorInt())
                             )
                         }
-                        if(isHaveNotice){
-                            Box(modifier = Modifier
-                                .padding(top = 3.dp)
-                                .size(10.dp)
-                                .clip(
-                                    RoundedCornerShape(5.dp)
-                                )
-                                .background(Color(0xff6C47DB))
-                                .align(Alignment.TopEnd),
+                        if (isHaveNotice) {
+                            Box(
+                                modifier = Modifier
+                                    .padding(top = 3.dp)
+                                    .size(10.dp)
+                                    .clip(
+                                        RoundedCornerShape(5.dp)
+                                    )
+                                    .background(Color(0xff6C47DB))
+                                    .align(Alignment.TopEnd),
                             )
                         }
                     }
@@ -130,29 +141,44 @@ fun HomeUserScreen(navController: NavController,movieViewModel: MovieViewModel, 
                 Spacer(modifier = Modifier.height(10.dp))
                 Row(
                     modifier = Modifier
-                        .padding(start = 15.dp, end = 15.dp)
                         .fillMaxWidth()
-                        .height(40.dp)
-                        .border(
-                            width = 1.dp,
-                            color = Color(0xffffffff),
-                            shape = RoundedCornerShape(10.dp)
-                        )
-                        .padding(horizontal = 10.dp),
+                        .padding(start = 15.dp, end = 15.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        Icons.Outlined.Search,
-                        contentDescription = "",
-                        tint = Color(0xff6C47DB)
-                    )
-                    Spacer(modifier = Modifier.width(20.dp))
-                    Text(
-                        text = "Movie search ...",
-                        color = Color(0xff6C47DB),
-                        fontSize = 16.sp,
-                        fontFamily = Inter,
-                        fontWeight = FontWeight.Light
+                    Row(
+                        modifier = Modifier
+
+                            .weight(1f)
+                            .height(40.dp)
+                            .border(
+                                width = 1.dp,
+                                color = Color(0xffffffff),
+                                shape = RoundedCornerShape(10.dp)
+                            )
+                            .padding(horizontal = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            Icons.Outlined.Search,
+                            contentDescription = "",
+                            tint = Color(0xff6C47DB)
+                        )
+                        Spacer(modifier = Modifier.width(20.dp))
+                        Text(
+                            text = "Movie search ...",
+                            color = Color(0xff6C47DB),
+                            fontSize = 16.sp,
+                            fontFamily = Inter,
+                            fontWeight = FontWeight.Light
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(15.dp))
+                    // menu
+                    DropDownMenu(
+                        listMenuItems = category,
+                        onItemSelected = { category ->
+                            selectedCategory = category
+                        }
                     )
                 }
             }
@@ -169,12 +195,32 @@ fun HomeUserScreen(navController: NavController,movieViewModel: MovieViewModel, 
                     // banner
                     Banner()
                     Spacer(modifier = Modifier.height(15.dp))
-                    // new movie
-                    NewMovieList(navController, movieViewModel)
-                    Spacer(modifier = Modifier.height(15.dp))
-                    // coming soon
-                    ComingSoonList(navController, movieViewModel)
-                    // thêm lọc loại
+                }
+            }
+            if (selectedCategory == "Home") {
+                item {
+                    Column(
+                        modifier = Modifier.padding(start = 15.dp, end = 15.dp)
+                    ) {
+                        // new movie
+                        NewMovieList(navController, listMoviesNew)
+                        Spacer(modifier = Modifier.height(15.dp))
+                        // coming soon
+                        ComingSoonList(navController, listMoviesComingSoon)
+                    }
+                }
+            } else {
+                item {
+                    Column(
+                        modifier = Modifier.padding(start = 15.dp, end = 15.dp)
+                    ) {
+                        // movie by category
+                        MovieCategory(
+                            navController,
+                            listMovies = listMovies,
+                            category = selectedCategory
+                        )
+                    }
                 }
             }
             item {
