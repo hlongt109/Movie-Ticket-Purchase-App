@@ -27,6 +27,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.lhb.movieticketpurchaseapp.model.Movie
 import com.lhb.movieticketpurchaseapp.ui.theme.Inter
 import com.lhb.movieticketpurchaseapp.view.components.ItemMovie
 import com.lhb.movieticketpurchaseapp.view.components.ItemMovieFake
@@ -34,8 +35,8 @@ import com.lhb.movieticketpurchaseapp.view.components.ItemSeeAll
 import com.lhb.movieticketpurchaseapp.viewmodel.MovieViewModel
 
 @Composable
-fun ComingSoonList(navController: NavController, movieViewModel: MovieViewModel) {
-    val listMovies by movieViewModel.listMovies.observeAsState(emptyList())
+fun ComingSoonList(navController: NavController, listMovies: List<Movie>) {
+//    val listMovies by movieViewModel.listMovies.observeAsState(emptyList())
     Box(
         modifier = Modifier
             .fillMaxWidth()
