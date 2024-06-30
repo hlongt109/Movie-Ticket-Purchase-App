@@ -16,7 +16,7 @@ import com.lhb.movieticketpurchaseapp.viewmodel.MovieViewModel
 
 @Composable
 fun MovieCategory(navController: NavController, listMovies: List<Movie>, category: String){
-    val filteredMovies = listMovies.filter { it.type == category }
+    val filteredMovies = listMovies.filter { it.genre == category }
     val newMovies = filteredMovies.filter { it.status == 1 }
     val comingSoonMovies = filteredMovies.filter { it.status == 0 }
     Column {

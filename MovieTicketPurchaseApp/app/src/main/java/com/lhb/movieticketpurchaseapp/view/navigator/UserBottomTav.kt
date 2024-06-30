@@ -1,15 +1,10 @@
 package com.lhb.movieticketpurchaseapp.view.navigator
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ConfirmationNumber
@@ -22,7 +17,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -38,7 +32,7 @@ import androidx.navigation.compose.rememberNavController
 import com.lhb.movieticketpurchaseapp.view.userScreen.FavouriteUserScreen
 import com.lhb.movieticketpurchaseapp.view.userScreen.HomeUserScreen
 import com.lhb.movieticketpurchaseapp.view.userScreen.TicketUserScreen
-import com.lhb.movieticketpurchaseapp.viewmodel.MovieTypeViewModel
+import com.lhb.movieticketpurchaseapp.viewmodel.MovieGenreViewModel
 import com.lhb.movieticketpurchaseapp.viewmodel.MovieViewModel
 
 @Composable
@@ -49,7 +43,7 @@ fun UserBottomTav(navController: NavController){
         mutableStateOf(Icons.Outlined.Home)
     }
     val movieViewModel: MovieViewModel = viewModel()
-    val movieTypeViewModel : MovieTypeViewModel = viewModel()
+    val movieGenreViewModel : MovieGenreViewModel = viewModel()
 
     Scaffold(
         bottomBar = {
@@ -118,7 +112,7 @@ fun UserBottomTav(navController: NavController){
                 end = paddingValues.calculateEndPadding(LayoutDirection.Ltr))
         ){
             composable(BottomBarScreens.UserFavouriteScreen.screen){ FavouriteUserScreen(navController)}
-            composable(BottomBarScreens.UserHomeScreen.screen){ HomeUserScreen(navController,movieViewModel, movieTypeViewModel)}
+            composable(BottomBarScreens.UserHomeScreen.screen){ HomeUserScreen(navController,movieViewModel, movieGenreViewModel)}
             composable(BottomBarScreens.UserTicketScreen.screen){ TicketUserScreen(navController)}
         }
     }

@@ -71,7 +71,7 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:$nav_version")
     implementation("io.coil-kt:coil-compose:2.6.0")
     implementation ("androidx.compose.runtime:runtime-livedata:1.6.8")
-    implementation ("androidx.compose.material:material-icons-extended-android:1.6.7")
+    implementation ("androidx.compose.material:material-icons-extended-android:1.6.8")
     //
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")

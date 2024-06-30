@@ -1,13 +1,12 @@
 package com.lhb.movieticketpurchaseapp.network
 
 import com.lhb.movieticketpurchaseapp.model.Response
-import com.lhb.movieticketpurchaseapp.model.StatusResponse
-import com.lhb.movieticketpurchaseapp.model.UserModel
+import com.lhb.movieticketpurchaseapp.model.User
 import retrofit2.http.Body
 import retrofit2.http.POST
 
 interface UserService {
   @POST("/api/login")
-  suspend fun login(@Body user:UserModel): Response<UserModel>
+  suspend fun login(@Body user:User): Response<User>
 
 }

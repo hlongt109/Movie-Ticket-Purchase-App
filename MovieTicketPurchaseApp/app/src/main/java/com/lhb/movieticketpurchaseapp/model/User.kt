@@ -1,11 +1,12 @@
 package com.lhb.movieticketpurchaseapp.model
 
-data class UserModel(
+data class User(
     val id: String? = null,
+    val username: String? = null,
     val name: String? = null,
     val email: String?,
-    val phoneNumber: String? = null,
     val password: String?,
+    val role: Int? = null,
     val avatar: String? = null,
-    val role: Int? = null
+    val phoneNumber: String? = null
 )
