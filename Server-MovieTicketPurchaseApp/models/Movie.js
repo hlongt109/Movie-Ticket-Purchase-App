@@ -12,6 +12,7 @@ const Movie = new Schema({
     rating:{ type: Number}, // danh gia
     poster: { type: String, required: true}, // ap phich (avatar)
     images: { type: Array, required: true}, 
-    trailer: { type: String, required: true}
+    trailer: { type: String, required: true},
+    status: {type: Number}
 })
 module.exports = mongoose.model("movie", Movie)
