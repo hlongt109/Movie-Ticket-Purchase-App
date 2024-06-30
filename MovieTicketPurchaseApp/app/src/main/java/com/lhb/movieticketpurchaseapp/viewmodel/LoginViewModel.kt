@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.lhb.movieticketpurchaseapp.model.UserModel
+import com.lhb.movieticketpurchaseapp.model.User
 import com.lhb.movieticketpurchaseapp.repository.UserRepository
 import kotlinx.coroutines.launch
 
@@ -39,7 +39,7 @@ class LoginViewModel(private val userRepository: UserRepository): ViewModel() {
         if(validateLogin()){
             viewModelScope.launch {
                 try {
-                    val user = UserModel(email = email.value, password = password.value)
+                    val user = User(email = email.value, password = password.value)
                     val response = userRepository.login(user)
                     if(response.status == 200){
                         loginError.value = ""

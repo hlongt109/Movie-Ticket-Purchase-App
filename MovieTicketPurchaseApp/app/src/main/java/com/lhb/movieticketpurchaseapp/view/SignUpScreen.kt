@@ -228,7 +228,7 @@ fun SignUpScreen(navController: NavController){
                 Spacer(modifier = Modifier.height(40.dp))
                 Button(
                     onClick = {
-                        navController.navigate(Screens.UserBottomTav.route)
+                        navController.navigate(Screens.AdminBottomTav.route)
                     },
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp),

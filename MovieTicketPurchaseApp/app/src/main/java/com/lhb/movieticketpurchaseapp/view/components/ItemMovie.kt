@@ -31,7 +31,7 @@ fun ItemMovie(
             .clickable {  }
     ) {
         AsyncImage(
-            model = movie.image,
+            model = movie.poster,
             contentDescription = null,
             modifier = Modifier
                 .fillMaxSize()

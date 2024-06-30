@@ -9,8 +9,8 @@ open class RetrofitService {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-    val manageService: ManageService by lazy {
-        retrofit.create(ManageService::class.java)
+    val managerService: ManagerService by lazy {
+        retrofit.create(ManagerService::class.java)
     }
     val userService: UserService by lazy {
         retrofit.create(UserService::class.java)
