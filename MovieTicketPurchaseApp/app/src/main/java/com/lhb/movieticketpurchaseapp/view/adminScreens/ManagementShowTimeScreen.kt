@@ -35,7 +35,7 @@ fun ManagementShowTimeScreen(navController: NavController){
             )
         },
         floatingActionButton = {
-            FAButton(onClick = { navController.navigate(Screens.ShowTimeFormScreen.route) })
+            FAButton(onClick = { navController.navigate(Screens.ADD_ShowTimeForm.route) })
         }
     ) { innerPadding ->
         Column(

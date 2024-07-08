@@ -5,27 +5,21 @@ import android.net.Uri
 import android.util.Log
 import java.io.*
 
-fun Context.createFileFromUri(uri: Uri,name: String): File?{
-    val file = File(cacheDir, "$name.png")
-    return try {
-        contentResolver.openInputStream(uri)?.use { inputStream ->
-            FileOutputStream(file).use { outputStream ->
-                val buffer = ByteArray(1024)
-                var length: Int
-                while (inputStream.read(buffer).also { length = it } > 0) {
-                    outputStream.write(buffer, 0, length)
-                }
+fun Context.createFileFromUri(uri: Uri, fileType: String): File? {
+    val fileName = "${System.currentTimeMillis()}.$fileType"
+    val file = File(cacheDir, fileName)
+
+    try {
+        val inputStream: InputStream? = contentResolver.openInputStream(uri)
+        val outputStream = FileOutputStream(file)
+        inputStream?.use { input ->
+            outputStream.use { output ->
+                input.copyTo(output)
             }
         }
-        Log.d("TAG", "File successfully created at: ${file.path}")
-        file
-    }catch (e: FileNotFoundException) {
+        return file
+    } catch (e: Exception) {
         e.printStackTrace()
-        Log.e("TAG", "FileNotFoundException: ${e.message}")
-        null
-    } catch (e: IOException) {
-        e.printStackTrace()
-        Log.e("TAG", "IOException: ${e.message}")
-        null
     }
+    return null
 }

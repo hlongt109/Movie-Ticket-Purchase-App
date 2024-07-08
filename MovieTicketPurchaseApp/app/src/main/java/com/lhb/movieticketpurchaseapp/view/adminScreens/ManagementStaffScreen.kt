@@ -35,7 +35,7 @@ fun ManagementStaffScreen(navController: NavController){
             )
         },
         floatingActionButton = {
-            FAButton(onClick = { navController.navigate(Screens.StaffFormScreen.route) })
+            FAButton(onClick = { navController.navigate(Screens.ADD_Staff_Form.route) })
         }
     ) { innerPadding ->
         Column(

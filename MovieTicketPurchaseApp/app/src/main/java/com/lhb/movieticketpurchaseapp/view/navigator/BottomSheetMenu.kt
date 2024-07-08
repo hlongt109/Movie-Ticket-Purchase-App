@@ -21,14 +21,14 @@ import com.lhb.movieticketpurchaseapp.view.components.ItemBottomSheet
 @Composable
 fun BottomSheetMenu(navController: NavController) {
     val menuItems = listOf(
-        "Movie" to Screens.MovieFormScreen.route,
-        "Movie Genre" to Screens.MovieGenreFormScreen.route,
-        "Theater" to Screens.TheaterFormScreen.route,
-        "Cinema Halls" to Screens.CinemaHallFormScreen.route,
-        "Show Time" to Screens.ShowTimeFormScreen.route,
-        "Food & Drinks" to Screens.FoodDrinkFormScreen.route,
-        "Staff" to Screens.StaffFormScreen.route,
-        "Ticket" to Screens.TicketFormScreen.route
+        "Movie" to Screens.ADD_Movie_Form.route,
+        "Movie Genre" to Screens.ADD_MovieGenre_Form.route,
+        "Theater" to Screens.ADD_Theaters_Form.route,
+        "Cinema Halls" to Screens.ADD_CinemaHall_Form.route,
+        "Show Time" to Screens.ADD_ShowTimeForm.route,
+        "Food & Drinks" to Screens.ADD_FoodDrinks_Form.route,
+        "Staff" to Screens.ADD_Staff_Form.route,
+        "Ticket" to Screens.ADD_Tickets_Form.route
     )
     LazyColumn(
         modifier = Modifier

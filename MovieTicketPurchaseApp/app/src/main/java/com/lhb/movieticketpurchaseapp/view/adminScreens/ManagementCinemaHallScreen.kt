@@ -35,7 +35,7 @@ fun ManagementCinemaHallScreen(navController: NavController){
             )
         },
         floatingActionButton = {
-            FAButton(onClick = { navController.navigate(Screens.CinemaHallFormScreen.route) })
+            FAButton(onClick = { navController.navigate(Screens.ADD_CinemaHall_Form.route) })
         }
     ) { innerPadding ->
         Column(

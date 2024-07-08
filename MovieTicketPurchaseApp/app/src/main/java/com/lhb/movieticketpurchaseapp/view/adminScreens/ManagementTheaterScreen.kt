@@ -35,7 +35,7 @@ fun ManagementTheaterScreen(navController: NavController){
             )
         },
         floatingActionButton = {
-            FAButton(onClick = { navController.navigate(Screens.TheaterFormScreen.route) })
+            FAButton(onClick = { navController.navigate(Screens.ADD_Theaters_Form.route) })
         }
     ) { innerPadding ->
         Column(

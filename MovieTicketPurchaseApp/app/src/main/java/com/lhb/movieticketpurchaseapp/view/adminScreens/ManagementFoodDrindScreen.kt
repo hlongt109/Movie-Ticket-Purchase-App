@@ -35,7 +35,7 @@ fun ManagementFoodDrinkScreen(navController: NavController){
             )
         },
         floatingActionButton = {
-            FAButton(onClick = { navController.navigate(Screens.FoodDrinkFormScreen.route) })
+            FAButton(onClick = { navController.navigate(Screens.ADD_FoodDrinks_Form.route) })
         }
     ) { innerPadding ->
         Column(

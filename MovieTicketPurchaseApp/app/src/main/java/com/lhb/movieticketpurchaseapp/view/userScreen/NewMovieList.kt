@@ -39,6 +39,7 @@ import com.lhb.movieticketpurchaseapp.model.Movie
 import com.lhb.movieticketpurchaseapp.ui.theme.Inter
 import com.lhb.movieticketpurchaseapp.view.components.ItemMovie
 import com.lhb.movieticketpurchaseapp.view.components.ItemMovieFake
+import com.lhb.movieticketpurchaseapp.view.components.ItemMovieUser
 import com.lhb.movieticketpurchaseapp.view.components.ItemSeeAll
 import com.lhb.movieticketpurchaseapp.viewmodel.MovieViewModel
 
@@ -103,7 +104,7 @@ fun NewMovieList(navController: NavController, listMovies: List<Movie>) {
                     }
                 } else {
                     itemsIndexed(listMovies.take(8)) { index, movie ->
-                        ItemMovie(movie = movie, navController)
+                        ItemMovieUser(movie = movie, onClickToDetails = {})
                     }
                     item {
                         ItemSeeAll(navController)
