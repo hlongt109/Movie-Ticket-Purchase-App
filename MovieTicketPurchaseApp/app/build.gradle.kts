@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    kotlin("kapt")
 }
 
 android {
@@ -72,9 +73,15 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.6.0")
     implementation ("androidx.compose.runtime:runtime-livedata:1.6.8")
     implementation ("androidx.compose.material:material-icons-extended-android:1.6.8")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
+    implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.8.2")
+    implementation ("androidx.activity:activity-compose:1.9.0")
     //
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
     //
     implementation ("androidx.compose.foundation:foundation:1.6.8")
+    implementation ("androidx.appcompat:appcompat:1.7.0")
+    implementation ("androidx.compose.material:material:1.6.8")
+    implementation ("com.google.android.material:material:1.6.0")
 }

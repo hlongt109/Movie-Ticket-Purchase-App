@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.material.icons.outlined.ConfirmationNumber
 import androidx.compose.material.icons.outlined.Fastfood
 import androidx.compose.material.icons.outlined.Groups
@@ -29,6 +30,7 @@ import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material.icons.outlined.Stars
 import androidx.compose.material.icons.outlined.TheaterComedy
 import androidx.compose.material.icons.outlined.Theaters
+import androidx.compose.material.icons.outlined.Timelapse
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -51,6 +53,7 @@ fun DashboardManage(navController: NavController) {
         Triple("Movies", Icons.Outlined.Movie, Screens.ManageMovieScreen.route),
         Triple("Theaters", Icons.Outlined.Room, Screens.ManageTheatersScreen.route),
         Triple("Cinema Halls", Icons.Outlined.Theaters, Screens.ManageCinemaHallScreen.route),
+        Triple("Time Frames", Icons.Outlined.Timelapse, Screens.ManageTimeFrameScreen.route),
         Triple("Show Times", Icons.Outlined.Schedule, Screens.ManageShowTimeScreen.route),
         Triple("Food & Drinks", Icons.Outlined.Fastfood, Screens.ManageFoodAndDrinkScreen.route),
         Triple("Tickets", Icons.Outlined.ConfirmationNumber, Screens.ManageTicketsScreen.route),

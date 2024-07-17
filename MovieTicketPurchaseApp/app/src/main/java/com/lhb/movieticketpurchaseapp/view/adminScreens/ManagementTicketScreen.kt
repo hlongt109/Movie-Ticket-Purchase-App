@@ -35,7 +35,7 @@ fun ManagementTicketScreen(navController: NavController){
             )
         },
         floatingActionButton = {
-            FAButton(onClick = { navController.navigate(Screens.TicketFormScreen.route) })
+            FAButton(onClick = { navController.navigate(Screens.ADD_Tickets_Form.route) })
         }
     ) { innerPadding ->
         Column(
