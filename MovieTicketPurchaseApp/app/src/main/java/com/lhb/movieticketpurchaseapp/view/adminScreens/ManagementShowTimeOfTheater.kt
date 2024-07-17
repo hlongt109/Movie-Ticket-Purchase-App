@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -20,80 +19,65 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.lhb.movieticketpurchaseapp.view.components.DeleteDialog
 import com.lhb.movieticketpurchaseapp.view.components.FAButton
-import com.lhb.movieticketpurchaseapp.view.components.ItemFoodDrink
+import com.lhb.movieticketpurchaseapp.view.components.ItemShowTime
 import com.lhb.movieticketpurchaseapp.view.components.TopBar
 import com.lhb.movieticketpurchaseapp.view.navigator.Screens
-import com.lhb.movieticketpurchaseapp.viewmodel.FoodDrinkViewModel
-import kotlinx.coroutines.Dispatchers
+import com.lhb.movieticketpurchaseapp.viewmodel.CinemaHallViewModel
+import com.lhb.movieticketpurchaseapp.viewmodel.ShowTimeViewModel
 import kotlinx.coroutines.launch
-import java.util.Locale
 
 @Composable
-fun ManagementFoodDrinkScreen(navController: NavController, foodDrinkViewModel: FoodDrinkViewModel){
+fun ManagementShowTimeOfTheater(
+    theaterId: String,
+    theaterName: String?,
+    showTimeViewModel: ShowTimeViewModel,
+    navController: NavController
+){
     val isSearchMovie = remember { mutableStateOf(false) }
     val searchQuery = remember { mutableStateOf("") }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
 
-    val foodDrinkListState = foodDrinkViewModel.foodDrinkList.observeAsState(initial = emptyList())
-    var foodDrinkList = foodDrinkListState.value
+    val showtimeState = showTimeViewModel.getShowTimeListByTheaterId(theaterId).observeAsState(initial = emptyList())
+    val showTimeList = showtimeState.value
 
     var idToDelete by remember { mutableStateOf("") }
     var showDialogDelete by remember { mutableStateOf(false) }
-
-    // search
-    LaunchedEffect(searchQuery.value) {
-        val query = searchQuery.value.toLowerCase(Locale.getDefault())
-        val filterList = if (query.isNotEmpty()) {
-            foodDrinkList.filter { tt ->
-                tt.name.toLowerCase(Locale.getDefault())
-                    .contains(query) || tt.id.toLowerCase(Locale.getDefault()).contains(query)
-            }
-        } else {
-            foodDrinkList
-        }
-        foodDrinkList = filterList
-    }
-    if (searchQuery.value.isEmpty()) {
-        LaunchedEffect(Unit) {
-            scope.launch(Dispatchers.IO) {
-                foodDrinkList = foodDrinkListState.value
-            }
-        }
-    }
 
     Scaffold(
         containerColor = Color(0xff14111e),
         modifier = Modifier.statusBarsPadding(),
         topBar = {
             TopBar(
-                title = "Food & Drink",
+                title = theaterName ?: "Manager show time",
                 isSearchActive = isSearchMovie.value,
                 searchQuery = searchQuery.value,
                 onSearchQueryChange = {searchQuery.value = it},
                 onSearchActiveChange = {isSearchMovie.value = it},
-                onBackClick = {navController.navigate(Screens.AdminBottomTav.route)},
+                onBackClick = {navController.popBackStack()},
                 onSearchIconClick = { isSearchMovie.value = true },
                 onMoreIconClick = {}
             )
         },
         floatingActionButton = {
-            FAButton(onClick = { navController.navigate(Screens.ADD_FoodDrinks_Form.route) })
+            FAButton(onClick = { navController.navigate(Screens.ADD_ShowTimeForm.route) })
         }
     ) { innerPadding ->
         Column(
             modifier = Modifier.padding(innerPadding)
         ) {
             LazyColumn {
-                items(foodDrinkList.size){index ->
-                    ItemFoodDrink(
-                        foodDrink = foodDrinkList[index],
-                        onClickToEdit = {id -> navController.navigate("${Screens.UPDATE_FoodDrinks_Form.route}/${id}")},
-                        onClickToDelete = {id ->
-                            idToDelete = id
-                            showDialogDelete = true
-                        }
-                    )
+                showTimeList?.let {
+                    items(it.size) { index ->
+                        ItemShowTime(
+                            showTime = showTimeList[index],
+                            onClickToEdit = { id -> navController.navigate("${Screens.UPDATE_ShowTimeForm.route}/${id}") },
+                            onClickToDelete = { id ->
+                                idToDelete = id
+                                showDialogDelete = true
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -101,7 +85,7 @@ fun ManagementFoodDrinkScreen(navController: NavController, foodDrinkViewModel: 
     if (showDialogDelete) {
         DeleteDialog(
             onConfirm = {
-                foodDrinkViewModel.deleteFoodDrink(id = idToDelete) { success ->
+                showTimeViewModel.deleteShowTime(id = idToDelete) { success ->
                     scope.launch {
                         if(success){
                             Toast.makeText(context, "Success to delete", Toast.LENGTH_SHORT).show()

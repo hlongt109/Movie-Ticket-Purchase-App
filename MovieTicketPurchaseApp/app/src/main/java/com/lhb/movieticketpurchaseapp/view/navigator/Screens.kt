@@ -18,6 +18,9 @@ enum class Screens(val route: String) {
     ManageStaffScreen("ManageStaffScreen"),
     ManageUsersScreen("ManageUsersScreen"),
     ManageMovieReviews("ManageMovieReviews"),
+    ManageHallScreen("ManageHallScreen"),
+    ManageTimeFrameScreen("ManageTimeFrameScreen"),
+    ManageShowTimeOfTheter("ManageShowTimeOfTheter"),
     //
     ADD_MovieGenre_Form("AddMovieGenreForm"),
     UPDATE_MovieGenre_Form("UpdateMovieGenreForm"),
@@ -25,8 +28,8 @@ enum class Screens(val route: String) {
     UPDATE_Movie_Form("UpdateMovie"),
     ADD_Theaters_Form("AddTheatersForm"),
     UPDATE_Theaters_Form("UpdateTheaters"),
-    ADD_CinemaHall_Form("AddCinemaHallForm"),
-    UPDATE_Cinema_Form("UpdateCinema"),
+    ADD_UPDATE_CinemaHall_Form("CinemaHallForm"),
+    UPDATE_CinemaHall_Form("UpdateCinema"),
     ADD_ShowTimeForm("AddShowTimeForm"),
     UPDATE_ShowTimeForm("UpdateShowTime"),
     ADD_FoodDrinks_Form("AddFoodDrinksForm"),
@@ -34,4 +37,6 @@ enum class Screens(val route: String) {
     ADD_Staff_Form("AddStaffForm"),
     UPDATE_Staff_Form("UpdateStaff"),
     ADD_Tickets_Form("AddTicketsForm"),
+    ADD_TimeFrame_Form("AddTimeFrameForm"),
+    UPDATE_TimeFrame_Form("UpdateTimeFrame")
 }

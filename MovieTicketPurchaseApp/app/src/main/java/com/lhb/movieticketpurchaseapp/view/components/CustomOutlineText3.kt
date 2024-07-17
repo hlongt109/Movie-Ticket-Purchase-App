@@ -53,7 +53,7 @@ fun CustomOutlineText3(
             color = Color(0xffffffff),
             fontFamily = Inter,
             fontWeight = FontWeight.Medium,
-            fontSize = 12.sp
+            fontSize = 14.sp
         ),
         singleLine = true,
         trailingIcon = {
@@ -62,7 +62,7 @@ fun CustomOutlineText3(
             ) {
                 Icon(
                     icon, contentDescription = "",
-                    modifier = Modifier.size(20.dp),
+                    modifier = Modifier.size(22.dp),
                     tint = Color(0xffffffff)
                 )
             }

@@ -90,9 +90,9 @@ fun HomeUserScreen(
                         )
                     }
                     Image(
-                        painter = painterResource(id = R.drawable.logo1),
+                        painter = painterResource(id = R.drawable.lg1),
                         contentDescription = null,
-                        modifier = Modifier.size(50.dp)
+                        modifier = Modifier.size(60.dp)
                     )
                     Box {
                         Box(

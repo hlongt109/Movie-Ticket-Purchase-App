@@ -1,8 +1,6 @@
 package com.lhb.movieticketpurchaseapp.view.adminScreens.formScreens
 
 import android.app.DatePickerDialog
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
@@ -11,7 +9,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -33,25 +30,16 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DriveFileRenameOutline
 import androidx.compose.material.icons.outlined.AddCircleOutline
 import androidx.compose.material.icons.outlined.CalendarMonth
-import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.DriveFileRenameOutline
-import androidx.compose.material.icons.outlined.People
 import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.Person2
-import androidx.compose.material.icons.outlined.Timelapse
 import androidx.compose.material.icons.outlined.Timer
-import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -64,41 +52,31 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
 import coil.compose.rememberImagePainter
 import coil.request.ImageRequest
-import com.lhb.movieticketpurchaseapp.R
 import com.lhb.movieticketpurchaseapp.model.MovieFormData
-import com.lhb.movieticketpurchaseapp.model.MovieTypeFormData
 import com.lhb.movieticketpurchaseapp.model.toFormData
 import com.lhb.movieticketpurchaseapp.ui.theme.Inter
 import com.lhb.movieticketpurchaseapp.utils.createFileByUri
 import com.lhb.movieticketpurchaseapp.utils.createFileByUris
-import com.lhb.movieticketpurchaseapp.utils.createFileFromUri
 import com.lhb.movieticketpurchaseapp.utils.createFileVideo
 import com.lhb.movieticketpurchaseapp.view.components.CustomBigButton
 import com.lhb.movieticketpurchaseapp.view.components.CustomDropDown
 import com.lhb.movieticketpurchaseapp.view.components.CustomOutlineText2
 import com.lhb.movieticketpurchaseapp.view.components.CustomOutlineText3
-import com.lhb.movieticketpurchaseapp.view.components.CustomOutlinedTextField
 import com.lhb.movieticketpurchaseapp.view.components.CustomOutlinedTextField1
 import com.lhb.movieticketpurchaseapp.view.components.TopBarForm
 import com.lhb.movieticketpurchaseapp.view.userScreen.HorizontalPagerIndicator
 import com.lhb.movieticketpurchaseapp.viewmodel.MovieGenreViewModel
 import com.lhb.movieticketpurchaseapp.viewmodel.MovieViewModel
 import kotlinx.coroutines.launch
-import java.io.File
-import java.io.FileNotFoundException
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -182,8 +160,8 @@ fun MovieFormScreens(
         calendar.get(Calendar.DAY_OF_MONTH)
     )
     // radioButton status
-    var selectedStatusIndex by remember { mutableIntStateOf(formData.status) }
-    val statusOptions = listOf("Coming Soon", "New", "Popular")
+    var selectedStatusIndex by remember(movieState) { mutableIntStateOf(formData.status) }
+    val statusOptions = listOf("Coming Soon", "New")
     Scaffold(
         containerColor = Color(0xff14111e),
         modifier = Modifier.statusBarsPadding(),
@@ -341,15 +319,13 @@ fun MovieFormScreens(
                             modifier = Modifier.fillMaxWidth(),
                             userScrollEnabled = true,
                         ) { page ->
-                            AsyncImage(
-                                model = images[page],
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .aspectRatio(16 / 9f),
-                                contentScale = ContentScale.Crop,
-                                placeholder = painterResource(id = R.drawable.banner2),
-                                error = painterResource(id = R.drawable.banner2)
+                            Image(
+                            painter = rememberImagePainter(data =images[page]),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .aspectRatio(16 / 9f),
+                            contentScale = ContentScale.Crop,
                             )
                         }
                         HorizontalPagerIndicator(
@@ -368,31 +344,6 @@ fun MovieFormScreens(
                             modifier = Modifier.size(30.dp)
                         )
                     }
-//                    else if (idUpdate != "" && formData.images.isNotEmpty()) {
-//                    val images = formData.images.toList()
-//                    HorizontalPager(
-//                        state = pagerState,
-//                        modifier = Modifier.fillMaxWidth(),
-//                        userScrollEnabled = true,
-//                    ) { page ->
-//                        Image(
-//                            painter = rememberImagePainter(data = images[page]),
-//                            contentDescription = null,
-//                            modifier = Modifier
-//                                .fillMaxWidth()
-//                                .aspectRatio(16 / 9f),
-//                            contentScale = ContentScale.Crop,
-//                        )
-//                    }
-//                    HorizontalPagerIndicator(
-//                        pagerState = pagerState,
-//                        modifier = Modifier
-//                            .align(Alignment.BottomCenter)
-//                            .padding(10.dp),
-//                        activeColor = Color.White,
-//                        inactiveColor = Color.Gray
-//                    )
-//                 }
                 }
             }
             Spacer(modifier = Modifier.height(20.dp))
@@ -456,9 +407,8 @@ fun MovieFormScreens(
                     label = "Duration ",
                     isContentError = isDurationError,
                     modifier = Modifier.weight(1f),
-                    onclick = {
-
-                    }
+                    placeholder = "min",
+                    onclick = {}
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 CustomOutlineText3(
@@ -478,9 +428,10 @@ fun MovieFormScreens(
             }
             Spacer(modifier = Modifier.height(20.dp))
             // status
-            Column(
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(20.dp)
             ) {
                 statusOptions.forEachIndexed { index, status ->
                     Row(
@@ -552,15 +503,13 @@ fun MovieFormScreens(
                         movieViewModel.addNewMovie(formData) { success ->
                             coroutineScope.launch {
                                 if (success) {
-                                    Toast.makeText(
-                                        context,
-                                        "Add movie successfully",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                    Toast.makeText(context, "Add movie successfully", Toast.LENGTH_SHORT).show()
                                     formData = MovieFormData()
+                                    imageFiles = emptyList()
+                                    selectedMovieGenre = movieGenres[0]
+                                    selectedStatusIndex = 0
                                 } else {
-                                    Toast.makeText(context, "Failed to add", Toast.LENGTH_SHORT)
-                                        .show()
+                                    Toast.makeText(context, "Failed to add", Toast.LENGTH_SHORT).show()
                                 }
                             }
                         }
@@ -568,19 +517,14 @@ fun MovieFormScreens(
                         movieViewModel.updateMovie(idUpdate, formData) { success ->
                             coroutineScope.launch {
                                 if (success) {
-                                    Toast.makeText(
-                                        context,
-                                        "Update movie successfully",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                    Toast.makeText(context, "Update movie successfully", Toast.LENGTH_SHORT).show()
                                     formData = MovieFormData()
                                     imageFiles = emptyList()
                                     selectedMovieGenre = movieGenres[0]
                                     selectedStatusIndex = 0
                                     navController.popBackStack()
                                 } else {
-                                    Toast.makeText(context, "Failed to update", Toast.LENGTH_SHORT)
-                                        .show()
+                                    Toast.makeText(context, "Failed to update", Toast.LENGTH_SHORT).show()
                                     navController.popBackStack()
                                 }
                             }

@@ -71,12 +71,10 @@ fun ManagementMovieGenreScreen(
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
 
-    val movieGenreListState =
-        movieGenreViewModel.listMovieTypes.observeAsState(initial = emptyList())
+    val movieGenreListState = movieGenreViewModel.listMovieTypes.observeAsState(initial = emptyList())
     var movieGenreList = movieGenreListState.value
 
     var idToDelete by remember { mutableStateOf("") }
-    var movieGenreToShowDetails by remember { mutableStateOf<MovieType?>(null) }
     var showDialogDelete by remember { mutableStateOf(false) }
 
     // search
@@ -145,11 +143,11 @@ fun ManagementMovieGenreScreen(
                 movieGenreViewModel.deleteMovieGenre(id = idToDelete) { success ->
                     scope.launch {
                         if(success){
-                            Toast.makeText(context, "Success to update", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Success to delete", Toast.LENGTH_SHORT).show()
                             showDialogDelete = false
                             idToDelete = ""
                         }else{
-                            Toast.makeText(context, "Failed to update", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Failed to delete", Toast.LENGTH_SHORT).show()
                             showDialogDelete = false
                         }
                     }

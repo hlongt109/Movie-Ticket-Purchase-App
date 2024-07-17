@@ -24,7 +24,7 @@ fun BottomSheetMenu(navController: NavController) {
         "Movie" to Screens.ADD_Movie_Form.route,
         "Movie Genre" to Screens.ADD_MovieGenre_Form.route,
         "Theater" to Screens.ADD_Theaters_Form.route,
-        "Cinema Halls" to Screens.ADD_CinemaHall_Form.route,
+        "Cinema Halls" to "${Screens.ADD_UPDATE_CinemaHall_Form.route}/${"empty"}/${"empty"}/${"empty"}",
         "Show Time" to Screens.ADD_ShowTimeForm.route,
         "Food & Drinks" to Screens.ADD_FoodDrinks_Form.route,
         "Staff" to Screens.ADD_Staff_Form.route,

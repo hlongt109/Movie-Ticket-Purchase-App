@@ -51,7 +51,7 @@ fun WelcomeScreen(navController: NavController) {
     var startAnimation by remember { mutableStateOf(false) }
     var startAnimation_button by remember { mutableStateOf(false) }
     //
-    val logoImage: Painter = painterResource(id = R.drawable.logo1)
+    val logoImage: Painter = painterResource(id = R.drawable.lg1)
 
     LaunchedEffect(Unit) {
         handle.postDelayed({

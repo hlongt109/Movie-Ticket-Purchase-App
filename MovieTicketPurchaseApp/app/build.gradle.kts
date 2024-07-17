@@ -82,4 +82,6 @@ dependencies {
     //
     implementation ("androidx.compose.foundation:foundation:1.6.8")
     implementation ("androidx.appcompat:appcompat:1.7.0")
+    implementation ("androidx.compose.material:material:1.6.8")
+    implementation ("com.google.android.material:material:1.6.0")
 }

@@ -28,35 +28,23 @@ import com.lhb.movieticketpurchaseapp.ui.theme.Inter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomOutlineText2(
+fun CustomTextFieldOnlyRead(
     value: String,
-    onValueChange: (String) -> Unit,
     icon: ImageVector,
     label: String,
-    isContentError: Boolean,
     modifier: Modifier,
-    placeholder: String,
-    onclick: () -> Unit
 ){
     OutlinedTextField(
         value = value,
-        onValueChange = onValueChange,
+        onValueChange = {},
         modifier = modifier
             .fillMaxWidth(),
+        readOnly = true,
         label = {
             Text(
                 text = "$label :",
                 fontSize = 14.sp,
                 color = Color(0xffffffff),
-                fontFamily = Inter,
-                fontWeight = FontWeight.Medium,
-            )
-        },
-        placeholder = {
-            Text(
-                text = placeholder,
-                fontSize = 14.sp,
-                color = Color(0xffA9A9A9),
                 fontFamily = Inter,
                 fontWeight = FontWeight.Medium,
             )
@@ -70,7 +58,7 @@ fun CustomOutlineText2(
         singleLine = true,
         trailingIcon = {
             IconButton(
-                onClick = {onclick()}
+                onClick = {}
             ) {
                 Icon(
                     icon, contentDescription = "",
@@ -88,6 +76,5 @@ fun CustomOutlineText2(
             imeAction = ImeAction.Done
         ),
         shape = RoundedCornerShape(12.dp),
-        isError = isContentError
     )
 }

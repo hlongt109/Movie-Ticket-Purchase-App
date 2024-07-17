@@ -1,5 +1,6 @@
 package com.lhb.movieticketpurchaseapp.view.adminScreens
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -24,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.lhb.movieticketpurchaseapp.model.Movie
 import com.lhb.movieticketpurchaseapp.model.MovieType
+import com.lhb.movieticketpurchaseapp.view.components.DeleteDialog
 import com.lhb.movieticketpurchaseapp.view.components.FAButton
 import com.lhb.movieticketpurchaseapp.view.components.ItemMovie
 import com.lhb.movieticketpurchaseapp.view.components.TopBar
@@ -100,7 +102,9 @@ fun ManagementMovieScreen(navController: NavController, movieViewModel: MovieVie
                             ItemMovie(
                                 movie = movie,
                                 onClickToEdit = { id -> navController.navigate("${Screens.UPDATE_Movie_Form.route}/${id}") },
-                                onClickToDelete = { id -> idToDelete = id },
+                                onClickToDelete = { id ->
+                                    idToDelete = id
+                                    showDialogDelete = true },
                                 onClickToDetails = { movieToShowDetails = movie },
                                 modifier = Modifier
                                     .weight(1f)
@@ -114,5 +118,27 @@ fun ManagementMovieScreen(navController: NavController, movieViewModel: MovieVie
                 }
             }
         }
+    }
+    if (showDialogDelete) {
+        DeleteDialog(
+            onConfirm = {
+                movieViewModel.deleteMovie(id = idToDelete) { success ->
+                    scope.launch {
+                        if(success){
+                            Toast.makeText(context, "Success to delete", Toast.LENGTH_SHORT).show()
+                            showDialogDelete = false
+                            idToDelete = ""
+                        }else{
+                            Toast.makeText(context, "Failed to delete", Toast.LENGTH_SHORT).show()
+                            showDialogDelete = false
+                        }
+                    }
+                }
+            },
+            onDismiss = {
+                idToDelete = ""
+                showDialogDelete = false
+            }
+        )
     }
 }
