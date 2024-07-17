@@ -1,5 +1,5 @@
-const express = require('express');
-const router = express.Router();
+var express = require('express');
+var router = express.Router();
 
 const User = require('../models/User')
 const Transporter = require('../config/common/mail')
@@ -49,8 +49,6 @@ router.post("register-new-account", async (req, res) => {
 })
 // login 
 const JWT = require('jsonwebtoken')
-// const e = require("express")
-// const { token } = require("morgan")
 const SECRETKEY = "LHBCINEMA"
 
 router.post("/login", async (req, res) => {

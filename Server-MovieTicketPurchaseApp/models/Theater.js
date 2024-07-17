@@ -4,7 +4,6 @@ const Schema = mongoose.Schema
 const Theater = new Schema({
     name: {type: String},
     location: {type: String},
-    logo: {type: String},
     contact: {type: String}
 })
-module.exports = mongoose("theater",Theater)
+module.exports = mongoose.model("theater",Theater)
