@@ -1,18 +1,19 @@
-const express = require('express');
-const router = express.Router();
+var express = require('express');
+var router = express.Router();
 // model
 const MovieType = require("../models/MovieType")
 
 // api
-router.post("/add-movie-type", async(req, res) =>{
+router.post("/add-movie-type", async (req, res) => {
     try {
-        const data = req.body
+        const data = req.body;
+        console.log("Received data:", data);
 
         const newMovieType = new MovieType({
             name: data.name
-        })
+        });
+        const result = await newMovieType.save();
 
-        const result = await newMovieType.save()
         if (result) {
             res.json({
                 "status": 200,
@@ -34,7 +35,7 @@ router.post("/add-movie-type", async(req, res) =>{
             "error": error.message
         });
     }
-})
+});
 // get
 router.get("/get-movie-type-list", async(req, res) =>{
     try {
@@ -88,7 +89,7 @@ router.delete("/delete-movie-type/:id", async(req, res) =>{
 router.put("/update-movie-type/:id", async(req, res) =>{
     try {
         const {id} = req.params
-        const data = res.body;
+        const data = req.body;
 
         const movieTypeToUpdate = await MovieType.findById(id)
         if (!movieTypeToUpdate) {

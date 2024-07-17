@@ -16,7 +16,7 @@ app.set('view engine', 'hbs');
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true })); // to parse URL-encoded bodies
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -36,6 +36,18 @@ app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+   // Log the error for debugging purposes
+   console.error(err.stack);
+
+    // Respond with JSON for API requests
+  if (req.originalUrl.startsWith('/api')) {
+    return res.status(err.status || 500).json({
+      status: err.status || 500,
+      message: err.message || 'Internal Server Error',
+      error: err.stack // You can adjust what you want to send back as the error information
+    });
+  }
 
   // render the error page
   res.status(err.status || 500);

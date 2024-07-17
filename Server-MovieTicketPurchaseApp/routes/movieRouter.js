@@ -1,30 +1,30 @@
-const express = require('express');
-const router = express.Router();
+var express = require('express');
+var router = express.Router();
 // model
 const Movie = require('../models/Movie')
-const uploadFile = require('../config/common/multer');
+const uploadFile = require('../config/common/upload');
 
 // api
 router.post('/add-movie', uploadFile.fields([
-    { name: 'images', maxCount: 5 },
     { name: 'poster', maxCount: 1 },
-    { name: 'trailer', maxCount: 1 }
+    { name: 'trailer', maxCount: 1 },
+    { name: 'images', maxCount: 5 }
 ]), async (req, res) => {
     try {
-        const data = req.body
-        const files = req.files
+        const data = req.body;
+        const files = req.files;
 
         if (!files || !files.images || !files.poster || !files.trailer) {
-            return res.status(400).json({
-                "status": 400,
-                "message": "Missing image or video files"
-            })
+            return res.status(404).json({
+                status: 404,
+                message: "Missing image or video files"
+            });
         }
-        const images = files.images.map(file => `${req.protocol}://${req.get("host")}/uploads/${file.filename}`);
+
         const poster = `${req.protocol}://${req.get("host")}/uploads/${files.poster[0].filename}`;
         const trailer = `${req.protocol}://${req.get("host")}/uploads/${files.trailer[0].filename}`;
+        const images = files.images.map(file => `${req.protocol}://${req.get("host")}/uploads/${file.filename}`);
 
-        // create a new movie
         const newMovie = new Movie({
             title: data.title,
             description: data.description,
@@ -34,6 +34,7 @@ router.post('/add-movie', uploadFile.fields([
             releaseDate: data.releaseDate,
             showTime: data.showTime,
             rating: data.rating,
+            status: data.status,
             poster: poster,
             images: images,
             trailer: trailer
@@ -42,75 +43,26 @@ router.post('/add-movie', uploadFile.fields([
         const result = await newMovie.save();
         if (result) {
             res.json({
-                "status": 200,
-                "message": "Add movie successfully",
-                "data": result
+                status: 200,
+                message: "Add movie successfully",
+                data: result
             });
         } else {
             res.json({
-                "status": 400,
-                "message": "Error, Add movie failed",
-                "data": []
+                status: 400,
+                message: "Error, Add movie failed",
+                data: []
             });
         }
     } catch (error) {
-        console.error("Error: " + error);
+        console.error("Error: " + error.message);
         res.status(500).json({
-            "status": 500,
-            "message": "Server error",
-            "error": error.message
+            status: 500,
+            message: "Server error",
+            error: error.message
         });
     }
 });
-// get
-router.get("/get-movie-list", async (req, res) => {
-    try {
-        const data = await Movie.find();
-        if (data) {
-            res.status(200).send(data)
-        } else {
-            res.json({
-                "status": 400,
-                "messenger": "Get movie list failed",
-                "data": []
-            })
-        }
-    } catch (error) {
-        console.error("Error: " + error);
-        res.status(500).json({
-            "status": 500,
-            "message": "Server error",
-            "error": error.message
-        });
-    }
-})
-// delete
-router.get("/delete-movie/:id", async (req, res) => {
-    try {
-        const { id } = req.params
-        const result = await Movie.findByIdAndDelete(id);
-        if (result) {
-            res.json({
-                "status": 200,
-                "messenger": "Movie deleted successfully",
-                "data": result
-            })
-        } else {
-            res.json({
-                "status": 400,
-                "messenger": "Error, movie deletion failed",
-                "data": []
-            })
-        }
-    } catch (error) {
-        console.error("Error: " + error);
-        res.status(500).json({
-            "status": 500,
-            "message": "Server error",
-            "error": error.message
-        });
-    }
-})
 // update
 router.put("/update-movie/:id", uploadFile.fields([
     { name: 'images', maxCount: 5 },
@@ -143,13 +95,13 @@ router.put("/update-movie/:id", uploadFile.fields([
             images = MovieToUpdate.images
         }
 
-        if (files && files.poster) {
+        if (files && files.poster && files.poster[0]) {
             poster = `${req.protocol}://${req.get("host")}/uploads/${files.poster[0].filename}`
         } else {
             poster = MovieToUpdate.poster
         }
 
-        if (files && files.trailer) {
+        if (files && files.trailer && files.trailer[0]) {
             trailer = `${req.protocol}://${req.get("host")}/uploads/${files.trailer[0].filename}`;
         } else {
             trailer = MovieToUpdate.trailer
@@ -164,6 +116,7 @@ router.put("/update-movie/:id", uploadFile.fields([
         MovieToUpdate.releaseDate = data.releaseDate ?? MovieToUpdate.releaseDate;
         MovieToUpdate.showTime = data.showTime ?? MovieToUpdate.showTime;
         MovieToUpdate.rating = data.rating ?? MovieToUpdate.rating;
+        MovieToUpdate.status = data.status ?? MovieToUpdate.status;
         MovieToUpdate.poster = poster;
         MovieToUpdate.images = images;
         MovieToUpdate.trailer = trailer;
@@ -192,6 +145,55 @@ router.put("/update-movie/:id", uploadFile.fields([
         });
     }
 })
+// get
+router.get("/get-movie-list", async (req, res) => {
+    try {
+        const data = await Movie.find();
+        if (data) {
+            res.status(200).send(data)
+        } else {
+            res.json({
+                "status": 400,
+                "messenger": "Get movie list failed",
+                "data": []
+            })
+        }
+    } catch (error) {
+        console.error("Error: " + error);
+        res.status(500).json({
+            "status": 500,
+            "message": "Server error",
+            "error": error.message
+        });
+    }
+})
+// delete
+router.delete("/delete-movie/:id", async (req, res) => {
+    try {
+        const {id} = req.params
+        const result = await Movie.findByIdAndDelete(id);
+        if (result) {
+            res.json({
+                "status": 200,
+                "messenger": "Movie deleted successfully",
+                "data": result
+            })
+        } else {
+            res.json({
+                "status": 400,
+                "messenger": "Error, movie deletion failed",
+                "data": []
+            })
+        }
+    } catch (error) {
+        console.error("Error: " + error);
+        res.status(500).json({
+            "status": 500,
+            "message": "Server error",
+            "error": error.message
+        });
+    }
+})
 // get one movie
 router.get("/get-movie-details/:id",async(req, res) =>{
     try {
@@ -205,12 +207,26 @@ router.get("/get-movie-details/:id",async(req, res) =>{
             });
         }
 
-        res.status(200).json({
-            "status":200,
-            "data": movie
-        })
+        // res.status(200).json({
+        //     "status":200,
+        //     "data": movie
+        // })
 
-        // res.status(200).send(movie) cach 2
+        // if (movie) {
+        //     res.json({
+        //         status: 200,
+        //         messenger: 'get movie details successfully',
+        //         data: movie
+        //     });
+        // } else {
+        //     res.json({
+        //         status: 400,
+        //         messenger: 'get movie details',
+        //         data: []
+        //     });
+        // }
+
+        res.status(200).send(movie) // cach 2
     } catch (error) {
         console.error("Error: " + error);
         res.status(500).json({
