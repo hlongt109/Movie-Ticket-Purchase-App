@@ -1,11 +1,10 @@
 package com.lhb.movieticketpurchaseapp.view.navigator
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -38,8 +37,17 @@ import com.lhb.movieticketpurchaseapp.view.adminScreens.formScreens.MovieGenreFo
 import com.lhb.movieticketpurchaseapp.view.adminScreens.formScreens.ShowTimeFormScreen
 import com.lhb.movieticketpurchaseapp.view.adminScreens.formScreens.TheaterFormScreens
 import com.lhb.movieticketpurchaseapp.view.adminScreens.formScreens.TimeFrameFormScreens
+import com.lhb.movieticketpurchaseapp.view.components.DetailsScreen
+import com.lhb.movieticketpurchaseapp.view.userScreen.ChooseFoodDrinkScreen
+import com.lhb.movieticketpurchaseapp.view.userScreen.TicketBookingScreen
+import com.lhb.movieticketpurchaseapp.viewmodel.BookingItemViewModel
+import com.lhb.movieticketpurchaseapp.viewmodel.BookingItemViewModelFactory
+import com.lhb.movieticketpurchaseapp.viewmodel.BookingViewModel
+import com.lhb.movieticketpurchaseapp.viewmodel.BookingViewModelFactory
 import com.lhb.movieticketpurchaseapp.viewmodel.CinemaHallViewModel
 import com.lhb.movieticketpurchaseapp.viewmodel.CinemaHallViewModelFactory
+import com.lhb.movieticketpurchaseapp.viewmodel.FavouriteViewModel
+import com.lhb.movieticketpurchaseapp.viewmodel.FavouriteViewModelFactory
 import com.lhb.movieticketpurchaseapp.viewmodel.FoodDrinkModelFactory
 import com.lhb.movieticketpurchaseapp.viewmodel.FoodDrinkViewModel
 import com.lhb.movieticketpurchaseapp.viewmodel.LoginViewModel
@@ -48,14 +56,21 @@ import com.lhb.movieticketpurchaseapp.viewmodel.MovieGenreViewModel
 import com.lhb.movieticketpurchaseapp.viewmodel.MovieGenreViewModelFactory
 import com.lhb.movieticketpurchaseapp.viewmodel.MovieViewModel
 import com.lhb.movieticketpurchaseapp.viewmodel.MovieViewModelFactory
+import com.lhb.movieticketpurchaseapp.viewmodel.PaymentViewModel
+import com.lhb.movieticketpurchaseapp.viewmodel.PaymentViewModelFactory
 import com.lhb.movieticketpurchaseapp.viewmodel.ShowTimeViewModel
 import com.lhb.movieticketpurchaseapp.viewmodel.ShowTimeViewModelFactory
 import com.lhb.movieticketpurchaseapp.viewmodel.TheaterViewModel
 import com.lhb.movieticketpurchaseapp.viewmodel.TheaterViewModelFactory
+import com.lhb.movieticketpurchaseapp.viewmodel.TicketViewModel
+import com.lhb.movieticketpurchaseapp.viewmodel.TicketViewModelFactory
 import com.lhb.movieticketpurchaseapp.viewmodel.TimeFrameModelFactory
 import com.lhb.movieticketpurchaseapp.viewmodel.TimeFrameViewModel
+import com.lhb.movieticketpurchaseapp.viewmodel.UserViewModel
+import com.lhb.movieticketpurchaseapp.viewmodel.UserViewModelFactory
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ScreenNavigation() {
     val navController = rememberNavController()
@@ -81,14 +96,26 @@ fun ScreenNavigation() {
     val timeFrameViewModel: TimeFrameViewModel = viewModel(factory = timeFrameFactory)
     val foodDrinkFactory = FoodDrinkModelFactory(manageRepository)
     val foodDrinkViewModel: FoodDrinkViewModel = viewModel(factory = foodDrinkFactory)
+    val userFactory = UserViewModelFactory(userRepository,context)
+    val userViewModel: UserViewModel = viewModel(factory = userFactory)
+    val bookingFactory = BookingViewModelFactory(userRepository)
+    val bookingViewModel: BookingViewModel = viewModel(factory = bookingFactory)
+    val bookingItemFactory = BookingItemViewModelFactory(userRepository)
+    val bookingItemViewModel: BookingItemViewModel = viewModel(factory = bookingItemFactory)
+    val paymentFactory = PaymentViewModelFactory(userRepository)
+    val paymentViewModel: PaymentViewModel = viewModel(factory = paymentFactory)
+    val ticketFactory = TicketViewModelFactory(userRepository)
+    val ticketViewModel: TicketViewModel = viewModel(factory = ticketFactory)
+    val favouriteFactory = FavouriteViewModelFactory(userRepository)
+    val favouriteViewModel: FavouriteViewModel = viewModel(factory = favouriteFactory)
 
     NavHost(
         navController = navController,
-        startDestination = Screens.AdminBottomTav.route
+        startDestination = Screens.WelcomeScreen.route
     ) {
-        composable(Screens.WelcomeScreen.route) { WelcomeScreen(navController) }
-        composable(Screens.LoginScreen.route) { LoginScreen(navController, loginViewModel) }
-        composable(Screens.SignUpScreen.route) { SignUpScreen(navController) }
+        composable(Screens.WelcomeScreen.route) { WelcomeScreen(navController,userViewModel) }
+        composable(Screens.LoginScreen.route) { LoginScreen(navController, userViewModel) }
+        composable(Screens.SignUpScreen.route) { SignUpScreen(navController,userViewModel) }
         // bottomNav
         composable(Screens.UserBottomTav.route) { UserBottomTav(navController) }
         composable(Screens.AdminBottomTav.route) { AdminBottomTav(navController) }
@@ -129,6 +156,12 @@ fun ScreenNavigation() {
                 showTimeViewModel ,
                 navController
             )
+        }
+        composable(
+            "${Screens.DetailsScreen.route}/{id}",
+            arguments = listOf(navArgument("id"){type = NavType.StringType})
+        ){ backStackEntry ->
+            DetailsScreen(idMovie = backStackEntry.arguments?.getString("id")?:"", navController, movieViewModel,favouriteViewModel,userViewModel)
         }
         // ====== form =======
         composable(Screens.ADD_MovieGenre_Form.route) { MovieGenreFormScreen(idUpdate = "", navController, movieGenreViewModel) }
@@ -206,5 +239,15 @@ fun ScreenNavigation() {
         ){ backStackEntry ->
             FoodDrinkFormScreens(idUpdate = backStackEntry.arguments?.getString("id")?: "", foodDrinkViewModel, navController)
         }
+        // booking
+        composable(
+            "${Screens.BookingScreen.route}/{id}",
+            arguments = listOf(navArgument("id"){type = NavType.StringType})
+        ){ backStackEntry ->
+            TicketBookingScreen(
+                idMovie = backStackEntry.arguments?.getString("id")?:"",
+                navController, movieViewModel, theaterViewModel, foodDrinkViewModel,showTimeViewModel,bookingViewModel,bookingItemViewModel,timeFrameViewModel,userViewModel,ticketViewModel,paymentViewModel)
+        }
+        composable(Screens.ChooseItemScreen.route){ ChooseFoodDrinkScreen(navController,foodDrinkViewModel,bookingItemViewModel)}
     }
 }

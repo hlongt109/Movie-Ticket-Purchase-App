@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -35,10 +38,31 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
+import com.lhb.movieticketpurchaseapp.view.components.ItemTicket
+import com.lhb.movieticketpurchaseapp.viewmodel.BookingItemViewModel
+import com.lhb.movieticketpurchaseapp.viewmodel.BookingViewModel
+import com.lhb.movieticketpurchaseapp.viewmodel.FoodDrinkViewModel
+import com.lhb.movieticketpurchaseapp.viewmodel.ShowTimeViewModel
+import com.lhb.movieticketpurchaseapp.viewmodel.TheaterViewModel
+import com.lhb.movieticketpurchaseapp.viewmodel.TicketViewModel
+import com.lhb.movieticketpurchaseapp.viewmodel.TimeFrameViewModel
+import com.lhb.movieticketpurchaseapp.viewmodel.UserViewModel
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TabRows() {
+fun TabRows(
+    ticketViewModel: TicketViewModel,
+    bookingViewModel: BookingViewModel,
+    showTimeViewModel: ShowTimeViewModel,
+    timeFrameViewModel: TimeFrameViewModel,
+    bookingItemViewModel: BookingItemViewModel,
+    foodDrinkViewModel: FoodDrinkViewModel,
+    theaterViewModel: TheaterViewModel,
+    userViewModel: UserViewModel
+) {
     val tabItems = listOf(
         TabItems(
             title = "Tickets",
@@ -129,32 +153,112 @@ fun TabRows() {
                 .weight(1f)
         ) { index ->
             when(index){
-                0 -> TicketsScreen()
-                1 -> TicketsHistoryScreen()
+                0 -> TicketsScreen(ticketViewModel,bookingViewModel,
+                    showTimeViewModel,
+                    timeFrameViewModel,
+                    bookingItemViewModel,
+                    foodDrinkViewModel,
+                    theaterViewModel,
+                    userViewModel)
+                1 -> TicketsHistoryScreen(ticketViewModel,bookingViewModel,
+                    showTimeViewModel,
+                    timeFrameViewModel,
+                    bookingItemViewModel,
+                    foodDrinkViewModel,
+                    theaterViewModel,
+                    userViewModel)
             }
         }
     }
 
 }
 @Composable
-fun TicketsScreen() {
-    // Nội dung của màn hình danh sách Tickets
+fun TicketsScreen(
+    ticketViewModel: TicketViewModel,
+    bookingViewModel: BookingViewModel,
+    showTimeViewModel: ShowTimeViewModel,
+    timeFrameViewModel: TimeFrameViewModel,
+    bookingItemViewModel: BookingItemViewModel,
+    foodDrinkViewModel: FoodDrinkViewModel,
+    theaterViewModel: TheaterViewModel,
+    userViewModel: UserViewModel
+) {
+    val currentDate = SimpleDateFormat("EEE dd/MM/yyyy", Locale.getDefault()).format(Date())
+    val userId = userViewModel.getUserId().toString()
+    val ticketsState = ticketViewModel.filterTicketsBeforeCurrentDate(currentDate,userId).observeAsState(initial = emptyList()).value
+
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        Text(text = "Danh sách Tickets", color = Color.White)
+        if(ticketsState.isNotEmpty()){
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(15.dp)
+            ) {
+                LazyColumn {
+                    items(ticketsState.size) { index ->
+                        ItemTicket(
+                            ticket = ticketsState[index],
+                            ticketViewModel,
+                            bookingViewModel,
+                            showTimeViewModel,
+                            timeFrameViewModel,
+                            bookingItemViewModel,
+                            foodDrinkViewModel,
+                            theaterViewModel
+                        )
+                    }
+                }
+            }
+        }else{
+            Text(text = "Tickets", color = Color.White)
+        }
     }
 }
 
 @Composable
-fun TicketsHistoryScreen() {
-    // Nội dung của màn hình Tickets History
+fun TicketsHistoryScreen(
+    ticketViewModel: TicketViewModel,
+    bookingViewModel: BookingViewModel,
+    showTimeViewModel: ShowTimeViewModel,
+    timeFrameViewModel: TimeFrameViewModel,
+    bookingItemViewModel: BookingItemViewModel,
+    foodDrinkViewModel: FoodDrinkViewModel,
+    theaterViewModel: TheaterViewModel,
+    userViewModel: UserViewModel
+) {
+    val userId = userViewModel.getUserId().toString()
+    val ticketsState = ticketViewModel.filterTicketsByUserId(userId).observeAsState(initial = emptyList()).value
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        Text(text = "Tickets History", color = Color.White)
+        if(ticketsState.isNotEmpty()){
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(15.dp)
+            ) {
+                LazyColumn {
+                    items(ticketsState.size) { index ->
+                        ItemTicket(
+                            ticket = ticketsState[index],
+                            ticketViewModel,
+                            bookingViewModel,
+                            showTimeViewModel,
+                            timeFrameViewModel,
+                            bookingItemViewModel,
+                            foodDrinkViewModel,
+                            theaterViewModel
+                        )
+                    }
+                }
+            }
+        }else{
+            Text(text = "Tickets History", color = Color.White)
+        }
     }
 }
 data class TabItems(

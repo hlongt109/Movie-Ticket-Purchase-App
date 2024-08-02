@@ -101,6 +101,7 @@ fun ShowTimeFormScreen(
             verticalArrangement = Arrangement.Center
         ) {
             CustomDatePickerRow(
+                selected = {},
                 initialDate = formData.showTimeDate
             ) { selectedDate ->
                 formData = formData.copy(showTimeDate = selectedDate)

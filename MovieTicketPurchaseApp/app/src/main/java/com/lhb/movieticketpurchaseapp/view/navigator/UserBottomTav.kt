@@ -29,11 +29,30 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.lhb.movieticketpurchaseapp.network.RetrofitService
+import com.lhb.movieticketpurchaseapp.repository.ManagerRepository
+import com.lhb.movieticketpurchaseapp.repository.UserRepository
 import com.lhb.movieticketpurchaseapp.view.userScreen.FavouriteUserScreen
 import com.lhb.movieticketpurchaseapp.view.userScreen.HomeUserScreen
 import com.lhb.movieticketpurchaseapp.view.userScreen.TicketUserScreen
+import com.lhb.movieticketpurchaseapp.viewmodel.BookingItemViewModel
+import com.lhb.movieticketpurchaseapp.viewmodel.BookingItemViewModelFactory
+import com.lhb.movieticketpurchaseapp.viewmodel.BookingViewModel
+import com.lhb.movieticketpurchaseapp.viewmodel.BookingViewModelFactory
+import com.lhb.movieticketpurchaseapp.viewmodel.FoodDrinkModelFactory
+import com.lhb.movieticketpurchaseapp.viewmodel.FoodDrinkViewModel
 import com.lhb.movieticketpurchaseapp.viewmodel.MovieGenreViewModel
 import com.lhb.movieticketpurchaseapp.viewmodel.MovieViewModel
+import com.lhb.movieticketpurchaseapp.viewmodel.ShowTimeViewModel
+import com.lhb.movieticketpurchaseapp.viewmodel.ShowTimeViewModelFactory
+import com.lhb.movieticketpurchaseapp.viewmodel.TheaterViewModel
+import com.lhb.movieticketpurchaseapp.viewmodel.TheaterViewModelFactory
+import com.lhb.movieticketpurchaseapp.viewmodel.TicketViewModel
+import com.lhb.movieticketpurchaseapp.viewmodel.TicketViewModelFactory
+import com.lhb.movieticketpurchaseapp.viewmodel.TimeFrameModelFactory
+import com.lhb.movieticketpurchaseapp.viewmodel.TimeFrameViewModel
+import com.lhb.movieticketpurchaseapp.viewmodel.UserViewModel
+import com.lhb.movieticketpurchaseapp.viewmodel.UserViewModelFactory
 
 @Composable
 fun UserBottomTav(navController: NavController){
@@ -42,8 +61,30 @@ fun UserBottomTav(navController: NavController){
     val selected = remember {
         mutableStateOf(Icons.Outlined.Home)
     }
+    val retrofitService = RetrofitService()
+
+    val userRepository = UserRepository(retrofitService)
+    val manageRepository = ManagerRepository(retrofitService)
+
     val movieViewModel: MovieViewModel = viewModel()
     val movieGenreViewModel : MovieGenreViewModel = viewModel()
+
+    val ticketViewModelFactory = TicketViewModelFactory(repository = userRepository)
+    val ticketViewModel: TicketViewModel = viewModel(factory = ticketViewModelFactory)
+    val bookingFactory = BookingViewModelFactory(userRepository)
+    val bookingViewModel: BookingViewModel = viewModel(factory = bookingFactory)
+    val showTimeFactory = ShowTimeViewModelFactory(manageRepository)
+    val showTimeViewModel: ShowTimeViewModel = viewModel(factory = showTimeFactory)
+    val timeFrameFactory = TimeFrameModelFactory(manageRepository)
+    val timeFrameViewModel: TimeFrameViewModel = viewModel(factory = timeFrameFactory)
+    val foodDrinkFactory = FoodDrinkModelFactory(manageRepository)
+    val foodDrinkViewModel: FoodDrinkViewModel = viewModel(factory = foodDrinkFactory)
+    val theaterFactory = TheaterViewModelFactory(manageRepository)
+    val theaterViewModel: TheaterViewModel = viewModel(factory = theaterFactory)
+    val bookingItemFactory = BookingItemViewModelFactory(userRepository)
+    val bookingItemViewModel: BookingItemViewModel = viewModel(factory = bookingItemFactory)
+    val userFactory = UserViewModelFactory(userRepository,context)
+    val userViewModel: UserViewModel = viewModel(factory = userFactory)
 
     Scaffold(
         bottomBar = {
@@ -113,7 +154,15 @@ fun UserBottomTav(navController: NavController){
         ){
             composable(BottomBarScreens.UserFavouriteScreen.screen){ FavouriteUserScreen(navController)}
             composable(BottomBarScreens.UserHomeScreen.screen){ HomeUserScreen(navController,movieViewModel, movieGenreViewModel)}
-            composable(BottomBarScreens.UserTicketScreen.screen){ TicketUserScreen(navController)}
+            composable(BottomBarScreens.UserTicketScreen.screen){ TicketUserScreen(navController, ticketViewModel,
+                bookingViewModel,
+                showTimeViewModel,
+                timeFrameViewModel,
+                bookingItemViewModel,
+                foodDrinkViewModel,
+                theaterViewModel,
+                userViewModel
+            )}
         }
     }
 }

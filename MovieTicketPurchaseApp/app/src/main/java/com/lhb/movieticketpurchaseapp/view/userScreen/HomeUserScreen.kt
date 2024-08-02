@@ -54,9 +54,13 @@ fun HomeUserScreen(
     movieGenreViewModel: MovieGenreViewModel
 ) {
     val isHaveNotice by remember { mutableStateOf(true) }
-    val listMovies by movieViewModel.listMovies.observeAsState(emptyList())
-    val listMoviesNew by movieViewModel.listMovies.observeAsState(emptyList())
-    val listMoviesComingSoon by movieViewModel.listMovies.observeAsState(emptyList())
+    val listMovies = movieViewModel.listMovies.observeAsState(initial = emptyList()).value
+    val listMoviesNewState = movieViewModel.getMovieByStatus(1).observeAsState(initial = emptyList())
+    val listMoviesComingSoonState = movieViewModel.getMovieByStatus(0).observeAsState(initial = emptyList())
+    val listMoviesNew = listMoviesNewState.value
+    val listMoviesComingSoon = listMoviesComingSoonState.value
+    var listBannerImage = movieViewModel.getImageBanner().observeAsState(initial = emptyList()).value
+
     val menuType by movieGenreViewModel.listMovieCategory.observeAsState(initial = emptyList())
     val category = listOf("Home") + menuType
     var selectedCategory = remember { category[0] }
@@ -183,7 +187,9 @@ fun HomeUserScreen(
                     modifier = Modifier.padding(start = 15.dp, end = 15.dp)
                 ) {
                     // banner
-                    Banner()
+                    if (listBannerImage.size == 10) {
+                        Banner(listBannerImage)
+                    }
                     Spacer(modifier = Modifier.height(15.dp))
                 }
             }
@@ -193,10 +199,14 @@ fun HomeUserScreen(
                         modifier = Modifier.padding(start = 15.dp, end = 15.dp)
                     ) {
                         // new movie
-                        NewMovieList(navController, listMoviesNew)
+                        if (listMoviesNew != null) {
+                            NewMovieList(navController, listMoviesNew)
+                        }
                         Spacer(modifier = Modifier.height(15.dp))
                         // coming soon
-                        ComingSoonList(navController, listMoviesComingSoon)
+                        if (listMoviesComingSoon != null) {
+                            ComingSoonList(navController, listMoviesComingSoon)
+                        }
                     }
                 }
             } else {

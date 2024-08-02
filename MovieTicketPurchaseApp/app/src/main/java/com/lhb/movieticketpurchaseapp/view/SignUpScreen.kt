@@ -1,5 +1,7 @@
 package com.lhb.movieticketpurchaseapp.view
 
+import android.util.Patterns
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -33,12 +35,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -50,16 +54,30 @@ import androidx.compose.ui.unit.sp
 import androidx.core.graphics.toColorInt
 import androidx.navigation.NavController
 import com.lhb.movieticketpurchaseapp.R
+import com.lhb.movieticketpurchaseapp.model.UserFormData
+import com.lhb.movieticketpurchaseapp.ui.theme.Inter
 import com.lhb.movieticketpurchaseapp.view.navigator.Screens
+import com.lhb.movieticketpurchaseapp.viewmodel.UserViewModel
+import kotlinx.coroutines.launch
 
 @Composable
-fun SignUpScreen(navController: NavController){
-    var name by remember { mutableStateOf("") }
-    var phoneNumber by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+fun SignUpScreen(navController: NavController, userViewModel: UserViewModel) {
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
+
+    var formData by remember {
+        mutableStateOf(UserFormData(role = 2))
+    }
+
     var confirmPassword by remember { mutableStateOf("") }
     val passwordVisible = remember { mutableStateOf(false) }
+
+    var isNameError by remember { mutableStateOf(false) }
+    var isEmailError by remember { mutableStateOf(false) }
+    var isEmailInvalid by remember { mutableStateOf(false) }
+    var isPasswordError by remember { mutableStateOf(false) }
+    var isConfirmPasswordError by remember { mutableStateOf(false) }
+    var isPasswordNotMatch by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -95,8 +113,11 @@ fun SignUpScreen(navController: NavController){
                     .verticalScroll(rememberScrollState())
             ) {
                 BasicTextField(
-                    value = name,
-                    onValueChange = {name = it},
+                    value = formData.name,
+                    onValueChange = {
+                        formData = formData.copy(name = it)
+                        isNameError = false
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(12.dp))
@@ -106,21 +127,36 @@ fun SignUpScreen(navController: NavController){
                     singleLine = true,
                     cursorBrush = SolidColor(Color.White),
                     decorationBox = { innerTextField ->
-                        if(name.isEmpty()){
+                        if (formData.name.isEmpty()) {
                             Text(
                                 text = "Full Name",
                                 color = Color("#5a595a".toColorInt()),
                                 fontSize = 16.sp,
+                                fontFamily = Inter,
                                 fontWeight = FontWeight.SemiBold
                             )
                         }
                         innerTextField()
                     }
                 )
+                if (isNameError) {
+                    Text(
+                        text = "Name must not be empty",
+                        fontFamily = Inter,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 13.sp,
+                        color = Color(0xffb1261c),
+                        modifier = Modifier.padding(top = 5.dp, start = 15.dp, end = 15.dp)
+                    )
+                }
                 Spacer(modifier = Modifier.height(25.dp))
                 BasicTextField(
-                    value = email,
-                    onValueChange = {email = it},
+                    value = formData.email,
+                    onValueChange = {
+                        formData = formData.copy(email = it)
+                        isEmailError = false
+                        isEmailInvalid = false
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(12.dp))
@@ -130,7 +166,7 @@ fun SignUpScreen(navController: NavController){
                     singleLine = true,
                     cursorBrush = SolidColor(Color.White),
                     decorationBox = { innerTextField ->
-                        if(email.isEmpty()){
+                        if (formData.email.isEmpty()) {
                             Text(
                                 text = "E-mail",
                                 color = Color("#5a595a".toColorInt()),
@@ -141,6 +177,25 @@ fun SignUpScreen(navController: NavController){
                         innerTextField()
                     }
                 )
+                if (isEmailError) {
+                    Text(
+                        text = "Email must be empty",
+                        fontFamily = Inter,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 13.sp,
+                        color = Color(0xffb1261c),
+                        modifier = Modifier.padding(top = 5.dp, start = 15.dp, end = 15.dp)
+                    )
+                } else if (isEmailInvalid) {
+                    Text(
+                        text = "Invalid email format",
+                        fontFamily = Inter,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 13.sp,
+                        color = Color(0xffb1261c),
+                        modifier = Modifier.padding(top = 5.dp, start = 15.dp, end = 15.dp)
+                    )
+                }
                 Spacer(modifier = Modifier.height(25.dp))
                 Row(
                     modifier = Modifier
@@ -150,21 +205,26 @@ fun SignUpScreen(navController: NavController){
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     BasicTextField(
-                        value = password,
-                        onValueChange = {password = it},
+                        value = formData.password,
+                        onValueChange = {
+                            formData = formData.copy(password = it)
+                            isPasswordError = false
+                            isPasswordNotMatch = false
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(12.dp))
                             .background(Color("#242329".toColorInt()))
-                            .padding(horizontal = 15.dp, vertical = 18.dp).weight(1f),
+                            .padding(horizontal = 15.dp, vertical = 18.dp)
+                            .weight(1f),
                         textStyle = TextStyle(color = Color.White, fontSize = 18.sp),
                         singleLine = true,
                         cursorBrush = SolidColor(Color.White),
                         keyboardActions = KeyboardActions(),
-                        visualTransformation = if(passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
+                        visualTransformation = if (passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                         decorationBox = { innerTextField ->
-                            if(password.isEmpty()){
+                            if (formData.password.isEmpty()) {
                                 Text(
                                     text = "Password",
                                     color = Color("#5a595a".toColorInt()),
@@ -175,13 +235,32 @@ fun SignUpScreen(navController: NavController){
                             innerTextField()
                         }
                     )
-                    IconButton(onClick = { passwordVisible.value =! passwordVisible.value }) {
+                    IconButton(onClick = { passwordVisible.value = !passwordVisible.value }) {
                         Icon(
                             imageVector = if (passwordVisible.value) Icons.Default.Visibility else Icons.Default.VisibilityOff,
                             contentDescription = if (passwordVisible.value) "Hide password" else "Show password",
                             tint = Color.White
                         )
                     }
+                }
+                if (isPasswordNotMatch) {
+                    Text(
+                        text = "Password is not match",
+                        fontFamily = Inter,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 13.sp,
+                        color = Color(0xffb1261c),
+                        modifier = Modifier.padding(top = 5.dp, start = 15.dp, end = 15.dp)
+                    )
+                } else if (isPasswordError) {
+                    Text(
+                        text = "Password must be at least 6 characters",
+                        fontFamily = Inter,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 13.sp,
+                        color = Color(0xffb1261c),
+                        modifier = Modifier.padding(top = 5.dp, start = 15.dp, end = 15.dp)
+                    )
                 }
                 Spacer(modifier = Modifier.height(25.dp))
                 Row(
@@ -193,20 +272,25 @@ fun SignUpScreen(navController: NavController){
                 ) {
                     BasicTextField(
                         value = confirmPassword,
-                        onValueChange = {confirmPassword = it},
+                        onValueChange = {
+                            confirmPassword = it
+                            isConfirmPasswordError = false
+                            isPasswordNotMatch = false
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(12.dp))
                             .background(Color("#242329".toColorInt()))
-                            .padding(horizontal = 15.dp, vertical = 18.dp).weight(1f),
+                            .padding(horizontal = 15.dp, vertical = 18.dp)
+                            .weight(1f),
                         textStyle = TextStyle(color = Color.White, fontSize = 18.sp),
                         singleLine = true,
                         cursorBrush = SolidColor(Color.White),
                         keyboardActions = KeyboardActions(),
-                        visualTransformation = if(passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
+                        visualTransformation = if (passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                         decorationBox = { innerTextField ->
-                            if(confirmPassword.isEmpty()){
+                            if (confirmPassword.isEmpty()) {
                                 Text(
                                     text = "Confirm Password",
                                     color = Color("#5a595a".toColorInt()),
@@ -217,7 +301,7 @@ fun SignUpScreen(navController: NavController){
                             innerTextField()
                         }
                     )
-                    IconButton(onClick = { passwordVisible.value =! passwordVisible.value }) {
+                    IconButton(onClick = { passwordVisible.value = !passwordVisible.value }) {
                         Icon(
                             imageVector = if (passwordVisible.value) Icons.Default.Visibility else Icons.Default.VisibilityOff,
                             contentDescription = if (passwordVisible.value) "Hide password" else "Show password",
@@ -225,10 +309,68 @@ fun SignUpScreen(navController: NavController){
                         )
                     }
                 }
+                if (isPasswordNotMatch) {
+                    Text(
+                        text = "Password is not match",
+                        fontFamily = Inter,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 13.sp,
+                        color = Color(0xffb1261c),
+                        modifier = Modifier.padding(top = 5.dp, start = 15.dp, end = 15.dp)
+                    )
+                } else if (isConfirmPasswordError) {
+                    Text(
+                        text = "Password must be at least 6 characters",
+                        fontFamily = Inter,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 13.sp,
+                        color = Color(0xffb1261c),
+                        modifier = Modifier.padding(top = 5.dp, start = 15.dp, end = 15.dp)
+                    )
+                }
                 Spacer(modifier = Modifier.height(40.dp))
                 Button(
                     onClick = {
-                        navController.navigate(Screens.AdminBottomTav.route)
+                        if (formData.name == "") {
+                            isNameError = true
+                            return@Button
+                        }
+                        if (formData.email == "") {
+                            isEmailError = true
+                            return@Button
+                        }
+                        if (!Patterns.EMAIL_ADDRESS.matcher(formData.email).matches()) {
+                            isEmailInvalid = true
+                            return@Button
+                        }
+                        if (formData.password.length < 6) {
+                            isPasswordError = true
+                            return@Button
+                        }
+                        if (confirmPassword.length < 6) {
+                            isConfirmPasswordError = true
+                            return@Button
+                        }
+                        if (formData.password != confirmPassword) {
+                            isPasswordNotMatch = true
+                            return@Button
+                        }
+                        userViewModel.signUp(formData) { success ->
+                            coroutineScope.launch {
+                                if (success) {
+                                    Toast.makeText(
+                                        context,
+                                        "Register successfully",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                    navController.navigate(Screens.LoginScreen.route)
+                                } else {
+                                    Toast.makeText(context, "Register failed", Toast.LENGTH_SHORT)
+                                        .show()
+                                }
+                            }
+                        }
+
                     },
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp),
@@ -241,11 +383,11 @@ fun SignUpScreen(navController: NavController){
                     )
                 }
                 Spacer(modifier = Modifier.height(25.dp))
-                Row (
+                Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
-                ){
+                ) {
                     Text(
                         text = "Do you already have an account?",
                         color = Color.White,

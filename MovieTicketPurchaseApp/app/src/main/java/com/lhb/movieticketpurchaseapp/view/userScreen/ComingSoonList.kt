@@ -33,11 +33,11 @@ import com.lhb.movieticketpurchaseapp.view.components.ItemMovie
 import com.lhb.movieticketpurchaseapp.view.components.ItemMovieFake
 import com.lhb.movieticketpurchaseapp.view.components.ItemMovieUser
 import com.lhb.movieticketpurchaseapp.view.components.ItemSeeAll
+import com.lhb.movieticketpurchaseapp.view.navigator.Screens
 import com.lhb.movieticketpurchaseapp.viewmodel.MovieViewModel
 
 @Composable
 fun ComingSoonList(navController: NavController, listMovies: List<Movie>) {
-//    val listMovies by movieViewModel.listMovies.observeAsState(emptyList())
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -96,7 +96,7 @@ fun ComingSoonList(navController: NavController, listMovies: List<Movie>) {
                     }
                 } else {
                     itemsIndexed(listMovies.take(8)) { index, movie ->
-                        ItemMovieUser(movie = movie, onClickToDetails ={} )
+                        ItemMovieUser(movie = movie, onClickToDetails ={navController.navigate("${Screens.DetailsScreen.route}/${movie.id}")} )
                     }
                     item {
                         ItemSeeAll(navController)

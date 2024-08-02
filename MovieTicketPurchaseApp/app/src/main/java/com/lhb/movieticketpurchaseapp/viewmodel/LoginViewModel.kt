@@ -35,24 +35,6 @@ class LoginViewModel(private val userRepository: UserRepository): ViewModel() {
         return isValid
     }
 
-    fun login(){
-        if(validateLogin()){
-            viewModelScope.launch {
-                try {
-                    val user = User(email = email.value, password = password.value)
-                    val response = userRepository.login(user)
-                    if(response.status == 200){
-                        loginError.value = ""
-                        role.value = response.data.role
-                    }else{
-                        loginError.value = "Account does not exist"
-                    }
-                }catch (e: Exception){
-                    loginError.value = "An error occurred: ${e.message}"
-                }
-            }
-        }
-    }
 }
 
 class LoginViewModelFactory(private val userRepository: UserRepository) : ViewModelProvider.Factory {

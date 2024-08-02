@@ -73,7 +73,7 @@ fun ItemFoodDrink(
         Row(
             modifier = Modifier
                 .weight(1f)
-                .padding(20.dp),
+                .padding(10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
