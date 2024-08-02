@@ -6,7 +6,7 @@ const User = new Schema({
     name: {type: String},
     email: {type: String},
     password: {type: String},
-    role: { type: Number, default: 1 }, // 0 nhan vien, 1 khach hang
+    role: { type: Number, default: -1 }, // 0 admin, 1 nv, 2 khach hang
     avatar: {type: String},
     phoneNumber: {type: String},
 })

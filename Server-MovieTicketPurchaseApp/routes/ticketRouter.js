@@ -10,7 +10,7 @@ router.post("/add-ticket", async (req, res) => {
         console.log("Received data:", data);
 
         const ticket = new Ticket({
-            qrCode: data.qrCode,
+            ticketCode: data.ticketCode,
             userId: data.userId,
             bookingId: data.bookingId,
             seatId: data.seatId,
@@ -106,7 +106,7 @@ router.put("/update-ticket/:id", async(req, res) =>{
             });
         }
 
-        ticket.qrCode = data.qrCode ?? ticket.qrCode
+        ticket.ticketCode = data.ticketCode ?? ticket.ticketCode
         ticket.userId = data.userId ?? ticket.userId
         ticket.bookingId = data.bookingId ?? ticket.bookingId
         ticket.seatId = data.seatId ?? ticket.seatId

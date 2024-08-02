@@ -20,13 +20,12 @@ router.post("/add-payment", async (req, res) => {
             res.json({
                 "status": 200,
                 "message": "Add payment successfully",
-                "data": result
+                "idReturn": result._id.toString()
             });
         } else {
             res.json({
                 "status": 400,
                 "message": "Error, Add payment failed",
-                "data": []
             });
         }
     } catch (error) {

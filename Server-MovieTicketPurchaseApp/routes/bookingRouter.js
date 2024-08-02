@@ -12,6 +12,7 @@ router.post("/add-booking", async (req, res) => {
         const newBooking = new Booking({
             userId: data.userId,
             showTimeId: data.showTimeId,
+            timeFrameId: data.timeFrameId,
             paymentId: data.paymentId,
             bookingDate: data.bookingDate,
             totalAmount: data.totalAmount
@@ -22,13 +23,12 @@ router.post("/add-booking", async (req, res) => {
             res.json({
                 "status": 200,
                 "message": "Add booking successfully",
-                "data": result
+                "idReturn": result._id.toString()
             });
         } else {
             res.json({
                 "status": 400,
                 "message": "Error, Add booking failed",
-                "data": []
             });
         }
     } catch (error) {
@@ -106,6 +106,7 @@ router.put("/update-booking/:id", async(req, res) =>{
 
         booingToUpdate.userId = data.userId ?? booingToUpdate.userId
         booingToUpdate.showTimeId = data.showTimeId ?? booingToUpdate.showTimeId
+        booingToUpdate.timeFrameId = data.timeFrameId ?? booingToUpdate.timeFrameId
         booingToUpdate.paymentId = data.paymentId ?? booingToUpdate.paymentId
         booingToUpdate.bookingDate = data.bookingDate ?? booingToUpdate.bookingDate
         booingToUpdate.totalAmount = data.totalAmount ?? booingToUpdate.totalAmount

@@ -9,7 +9,7 @@ const Movie = new Schema({
     duration: {type: Number}, // thoi luong bao nhieu phut
     releaseDate: {type: String, required: true}, // ngay phat hanh
     showTime:{type: String},
-    rating:{ type: Number}, // danh gia
+    rating:{ type: Number, default: 0.0}, // danh gia
     poster: { type: String, required: true}, // ap phich (avatar)
     images: { type: Array, required: true}, 
     trailer: { type: String, required: true},

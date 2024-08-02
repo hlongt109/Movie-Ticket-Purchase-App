@@ -14,6 +14,7 @@ const showTimeRouter = require('./showtimeRouter')
 const ticketRouter = require('./ticketRouter')
 const userRouter = require('./userRouter')
 const timeFrameRouter = require('./timeFrameRouter')
+const favouriteRouter = require('./favouriteRouter')
 
 router.use('',movieRouter)
 router.use('',movieTypeRouter)
@@ -28,5 +29,6 @@ router.use('', showTimeRouter)
 router.use('', ticketRouter)
 router.use('', userRouter)
 router.use('',timeFrameRouter)
+router.use('',favouriteRouter)
 
 module.exports = router
