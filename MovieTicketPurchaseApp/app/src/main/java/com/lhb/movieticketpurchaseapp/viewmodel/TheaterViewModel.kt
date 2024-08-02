@@ -112,6 +112,19 @@ class  TheaterViewModel(private val repository : ManagerRepository) : ViewModel(
         }
         return result
     }
+    fun getTheaterByIds (ids: List<String>): LiveData<List<Theater>>{
+        val result = MutableLiveData<List<Theater>>()
+        viewModelScope.launch {
+            try {
+                val filterList = _TheaterList.value?.filter { it.id in ids }
+                result.postValue(filterList ?: emptyList())
+            }catch (e: Exception){
+                Log.e("Tag", "get theaters by ids: " + e.message)
+                result.postValue(emptyList())
+            }
+        }
+        return result
+    }
 }
 class TheaterViewModelFactory(private val repository: ManagerRepository) :
     ViewModelProvider.Factory {

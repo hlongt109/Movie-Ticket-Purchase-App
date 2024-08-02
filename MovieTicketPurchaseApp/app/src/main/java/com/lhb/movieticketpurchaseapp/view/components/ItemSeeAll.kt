@@ -29,7 +29,7 @@ fun ItemSeeAll(navController: NavController) {
     Box(
         modifier = Modifier
             .width(150.dp)
-            .height(200.dp)
+            .height(190.dp)
             .clip(RoundedCornerShape(12.dp))
             .background(Color(0xff14111e))
             .clickable { }

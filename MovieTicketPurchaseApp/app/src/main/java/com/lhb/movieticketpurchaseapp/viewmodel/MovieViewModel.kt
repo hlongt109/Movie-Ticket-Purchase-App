@@ -38,7 +38,19 @@ class MovieViewModel(private val repository: ManagerRepository) : ViewModel() {
             }
         }
     }
-
+    fun getMovieByStatus(status: Int): LiveData<List<Movie>?>{
+        val result = MutableLiveData<List<Movie>?>()
+        viewModelScope.launch {
+            try {
+                val filterList = _listMovies.value?.filter { it.status == status }
+                result.postValue(filterList)
+            }catch (e: Exception){
+                Log.e("Tag", "get movie by status: " + e.message)
+                result.postValue(emptyList())
+            }
+        }
+        return result
+    }
     fun addNewMovie(
         formData: MovieFormData,
         onResult: (Boolean) -> Unit
@@ -115,6 +127,17 @@ class MovieViewModel(private val repository: ManagerRepository) : ViewModel() {
                 Log.e("TAG", "getMovieById: "+e.message )
                 result.postValue(null)
             }
+        }
+        return result
+    }
+    fun getImageBanner(): LiveData<List<String>>{
+        val result = MutableLiveData<List<String>>()
+        try {
+            val filterListImage = _listMovies.value?.mapNotNull { it.images.firstOrNull() }?.take(10)
+            result.postValue(filterListImage ?: emptyList())
+        }catch (e: Exception){
+            Log.e("TAG", "getFirstImages: " + e.message)
+            result.postValue(emptyList())
         }
         return result
     }

@@ -1,5 +1,6 @@
 package com.lhb.movieticketpurchaseapp.view.userScreen
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -38,15 +39,18 @@ import kotlinx.coroutines.launch
 
 @ExperimentalFoundationApi
 @Composable
-fun Banner() {
+fun Banner(imageBanner: List<String>) {
 
-    val images = listOf(
-        "https://via.placeholder.com/600x400.png?text=Image+1",
-        "https://via.placeholder.com/600x400.png?text=Image+2",
-        "https://via.placeholder.com/600x400.png?text=Image+3",
-        "https://via.placeholder.com/600x400.png?text=Image+4",
-        "https://via.placeholder.com/600x400.png?text=Image+5"
-    )
+    val images = imageBanner.ifEmpty {
+        listOf(
+            "https://via.placeholder.com/600x400.png?text=Image+1",
+            "https://via.placeholder.com/600x400.png?text=Image+2",
+            "https://via.placeholder.com/600x400.png?text=Image+3",
+            "https://via.placeholder.com/600x400.png?text=Image+4",
+            "https://via.placeholder.com/600x400.png?text=Image+5"
+        )
+    }
+    Log.d("TAG", "Banner: "+images.size)
     val pagerState = rememberPagerState(initialPage = 0, pageCount = { images.size })
     val scope = rememberCoroutineScope()
     val isUserScrolling = remember { mutableStateOf(false) }
@@ -68,8 +72,8 @@ fun Banner() {
                     .fillMaxWidth()
                     .aspectRatio(16 / 7.6f),
                 contentScale = ContentScale.Crop,
-                placeholder = painterResource(id = R.drawable.banner2),
-                error = painterResource(id = R.drawable.banner2)
+                placeholder = painterResource(id = R.drawable.lg1),
+                error = painterResource(id = R.drawable.lg1)
             )
         }
 
@@ -100,15 +104,6 @@ fun Banner() {
             }
         }
     }
-//    LaunchedEffect(Unit) {
-//        scope.launch {
-//            while (true) {
-//                delay(3000)
-//                val nextPage = (pagerState.currentPage + 1) % images.size
-//                pagerState.animateScrollToPage(nextPage)
-//            }
-//        }
-//    }
 }
 
 @OptIn(ExperimentalFoundationApi::class)

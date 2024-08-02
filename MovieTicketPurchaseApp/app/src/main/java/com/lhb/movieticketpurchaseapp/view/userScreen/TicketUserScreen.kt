@@ -24,9 +24,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.lhb.movieticketpurchaseapp.ui.theme.Inter
+import com.lhb.movieticketpurchaseapp.viewmodel.BookingItemViewModel
+import com.lhb.movieticketpurchaseapp.viewmodel.BookingViewModel
+import com.lhb.movieticketpurchaseapp.viewmodel.FoodDrinkViewModel
+import com.lhb.movieticketpurchaseapp.viewmodel.ShowTimeViewModel
+import com.lhb.movieticketpurchaseapp.viewmodel.TheaterViewModel
+import com.lhb.movieticketpurchaseapp.viewmodel.TicketViewModel
+import com.lhb.movieticketpurchaseapp.viewmodel.TimeFrameViewModel
+import com.lhb.movieticketpurchaseapp.viewmodel.UserViewModel
 
 @Composable
-fun TicketUserScreen(navController: NavController) {
+fun TicketUserScreen(
+    navController: NavController,
+    ticketViewModel: TicketViewModel,
+    bookingViewModel: BookingViewModel,
+    showTimeViewModel: ShowTimeViewModel,
+    timeFrameViewModel: TimeFrameViewModel,
+    bookingItemViewModel: BookingItemViewModel,
+    foodDrinkViewModel: FoodDrinkViewModel,
+    theaterViewModel: TheaterViewModel,
+    userViewModel: UserViewModel
+) {
 
     Scaffold(
         containerColor = Color(0xff14111e),
@@ -65,7 +83,15 @@ fun TicketUserScreen(navController: NavController) {
         Column(
             modifier = Modifier.padding(innerPadding)
         ) {
-            TabRows()
+            TabRows(
+                ticketViewModel,
+                bookingViewModel,
+                showTimeViewModel,
+                timeFrameViewModel,
+                bookingItemViewModel,
+                foodDrinkViewModel,
+                theaterViewModel,
+                userViewModel)
         }
     }
 }

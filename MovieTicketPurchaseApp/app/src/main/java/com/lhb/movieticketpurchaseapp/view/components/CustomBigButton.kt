@@ -9,9 +9,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.toColorInt
+import com.lhb.movieticketpurchaseapp.ui.theme.Inter
 import com.lhb.movieticketpurchaseapp.view.navigator.Screens
 
 @Composable
@@ -25,11 +27,13 @@ fun CustomBigButton(
         },
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = Color("#312064".toColorInt()))
+        colors = ButtonDefaults.buttonColors(containerColor = Color("#6C47DB".toColorInt())) // Color: 312064
     ) {
         Text(
             text = title,
             fontSize = 20.sp,
+            fontFamily = Inter,
+            fontWeight = FontWeight.SemiBold,
             modifier = Modifier.padding(vertical = 8.dp)
         )
     }

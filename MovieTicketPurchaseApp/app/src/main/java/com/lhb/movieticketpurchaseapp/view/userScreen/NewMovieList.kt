@@ -1,35 +1,25 @@
 package com.lhb.movieticketpurchaseapp.view.userScreen
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Circle
-import androidx.compose.material.icons.outlined.ArrowCircleRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
@@ -37,15 +27,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.lhb.movieticketpurchaseapp.model.Movie
 import com.lhb.movieticketpurchaseapp.ui.theme.Inter
-import com.lhb.movieticketpurchaseapp.view.components.ItemMovie
 import com.lhb.movieticketpurchaseapp.view.components.ItemMovieFake
 import com.lhb.movieticketpurchaseapp.view.components.ItemMovieUser
 import com.lhb.movieticketpurchaseapp.view.components.ItemSeeAll
-import com.lhb.movieticketpurchaseapp.viewmodel.MovieViewModel
+import com.lhb.movieticketpurchaseapp.view.navigator.Screens
 
 @Composable
 fun NewMovieList(navController: NavController, listMovies: List<Movie>) {
-//    val listMovies by movieViewModel.listMovies.observeAsState(emptyList())
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -103,8 +91,8 @@ fun NewMovieList(navController: NavController, listMovies: List<Movie>) {
                         ItemSeeAll(navController)
                     }
                 } else {
-                    itemsIndexed(listMovies.take(8)) { index, movie ->
-                        ItemMovieUser(movie = movie, onClickToDetails = {})
+                    itemsIndexed(listMovies.take(4)) { index, movie ->
+                        ItemMovieUser(movie = movie, onClickToDetails = {navController.navigate("${Screens.DetailsScreen.route}/${movie.id}")})
                     }
                     item {
                         ItemSeeAll(navController)

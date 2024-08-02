@@ -1,6 +1,7 @@
 package com.lhb.movieticketpurchaseapp.view.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,7 +26,7 @@ import com.lhb.movieticketpurchaseapp.model.Movie
 @Composable
 fun ItemMovieUser(
     movie: Movie,
-    onClickToDetails: (movie: Movie) -> Unit
+    onClickToDetails: () -> Unit
 ){
     Card(
         colors = CardDefaults.cardColors(
@@ -40,7 +41,7 @@ fun ItemMovieUser(
         ),
         modifier = Modifier
             .width(150.dp)
-            .height(200.dp)
+            .height(190.dp)
             .padding(bottom = 15.dp, start = 15.dp, end = 15.dp)
             .fillMaxWidth()
             .shadow(
@@ -49,6 +50,7 @@ fun ItemMovieUser(
                 ambientColor = Color(0xff6C47DB), // dark border
                 spotColor = Color(0xff6C47DB)  // light border
             )
+            .clickable { onClickToDetails() }
     ) {
         AsyncImage(
             model = movie.poster, // Assume movie has a poster URL
@@ -57,7 +59,7 @@ fun ItemMovieUser(
             error = painterResource(R.drawable.img), // Error image
             modifier = Modifier
                 .fillMaxSize()
-                .aspectRatio(0.75f) // Adjust aspect ratio as needed
+                .aspectRatio(0.68f) // Adjust aspect ratio as needed
                 .clip(RoundedCornerShape(10.dp))
                 .background(Color.Gray) // Placeholder color
         )

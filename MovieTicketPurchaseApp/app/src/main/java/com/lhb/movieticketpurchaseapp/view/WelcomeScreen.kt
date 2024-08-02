@@ -44,22 +44,57 @@ import com.lhb.movieticketpurchaseapp.R
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.graphics.toColorInt
 import com.lhb.movieticketpurchaseapp.view.navigator.Screens
+import com.lhb.movieticketpurchaseapp.viewmodel.UserViewModel
 
 @Composable
-fun WelcomeScreen(navController: NavController) {
+fun WelcomeScreen(navController: NavController, userViewModel: UserViewModel) {
     val handle = Handler(Looper.getMainLooper())
     var startAnimation by remember { mutableStateOf(false) }
     var startAnimation_button by remember { mutableStateOf(false) }
     //
     val logoImage: Painter = painterResource(id = R.drawable.lg1)
 
+//    LaunchedEffect(Unit) {
+//        handle.postDelayed({
+//            startAnimation = true
+//        }, 500)
+//
+//        handle.postDelayed({
+//            startAnimation_button = true
+//        }, 1500)
+//    }
     LaunchedEffect(Unit) {
         handle.postDelayed({
             startAnimation = true
         }, 500)
 
         handle.postDelayed({
-            startAnimation_button = true
+            val userId = userViewModel.getUserId()
+            val userRole = userViewModel.getUserRole()
+
+            if (userId != null && userRole != -1) {
+                when (userRole) {
+                    0 -> {
+                        navController.navigate(Screens.AdminBottomTav.route) {
+                            popUpTo(Screens.WelcomeScreen.route) { inclusive = true }
+                        }
+                    }
+
+                    1 -> {
+                        // nhân viên
+                    }
+
+                    2 -> {
+                        navController.navigate(Screens.UserBottomTav.route) {
+                            popUpTo(Screens.WelcomeScreen.route) { inclusive = true }
+                        }
+                    }
+                }
+            } else {
+                handle.postDelayed({
+                    startAnimation_button = true
+                }, 500)
+            }
         }, 1500)
     }
     val alphaAnimation by animateFloatAsState(

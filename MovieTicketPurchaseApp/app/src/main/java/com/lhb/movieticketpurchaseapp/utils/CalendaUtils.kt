@@ -30,6 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.lhb.movieticketpurchaseapp.model.ShowTime
 import com.lhb.movieticketpurchaseapp.ui.theme.Inter
 import java.io.*
 import java.text.SimpleDateFormat
@@ -103,6 +104,7 @@ fun DatePickerRow(
 
 @Composable
 fun CustomDatePickerRow(
+    selected: (String) ->Unit,
     initialDate: String,
     onDateSelected: (String) -> Unit
 ) {
@@ -122,19 +124,17 @@ fun CustomDatePickerRow(
         }
     }
 
-    // Update selectedDate with the initial date or current date
-//    if (initialDate.isEmpty()) {
-//        selectedDate = formattedCurrentDate
-//        onDateSelected(formattedCurrentDate)
-//    }
     LaunchedEffect(initialDate) {
         if (initialDate.isEmpty()) {
-            selectedDate = formattedCurrentDate
-            onDateSelected(formattedCurrentDate)
+//            selectedDate = formattedCurrentDate
+//            onDateSelected(formattedCurrentDate)
+            selected(dates.first())
+            selectedDate = dates.first()
+            onDateSelected(dates.first())
         }
     }
     Text(
-        text = "Select Show Time Date:",
+        text = "Select show date:",
         color = Color(0xffffffff),
         fontFamily = Inter,
         fontWeight = FontWeight.Medium,
@@ -153,7 +153,7 @@ fun CustomDatePickerRow(
                 textAlign = TextAlign.Center,
                 fontSize = 14.sp,
                 fontFamily = Inter,
-                fontWeight = FontWeight.Medium,
+                fontWeight = FontWeight.SemiBold,
                 modifier = Modifier
                     .clip(RoundedCornerShape(5.dp))
                     .background(Color(0xffffffff))
@@ -162,7 +162,7 @@ fun CustomDatePickerRow(
                         color = if (date == selectedDate) Color(0xff6C47DB) else Color(0xff14111e),
                         shape = RoundedCornerShape(5.dp)
                     )
-                    .padding(horizontal = 8.dp, vertical = 4.dp)
+                    .padding(horizontal = 8.dp, vertical = 8.dp)
                     .clickable {
                         selectedDate = date
                         onDateSelected(date)

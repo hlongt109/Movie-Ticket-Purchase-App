@@ -1,6 +1,8 @@
 package com.lhb.movieticketpurchaseapp.viewmodel
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,6 +14,11 @@ import com.lhb.movieticketpurchaseapp.model.toShowTime
 import com.lhb.movieticketpurchaseapp.network.RetrofitService
 import com.lhb.movieticketpurchaseapp.repository.ManagerRepository
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Date
+import java.util.Locale
 
 class ShowTimeViewModel(private val repository: ManagerRepository): ViewModel(){
     private val _showTimeList = MutableLiveData<List<ShowTime>>()
@@ -53,6 +60,40 @@ class ShowTimeViewModel(private val repository: ManagerRepository): ViewModel(){
         }
         return result
     }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getShowTimeByMovieIdAndDate(movieId: String, showTimeDate: String): LiveData<List<ShowTime>> {
+        val result = MutableLiveData<List<ShowTime>>()
+        viewModelScope.launch {
+            try {
+                val formatter = DateTimeFormatter.ofPattern("EEE dd/MM/yyyy", Locale.getDefault())
+                val parsedShowTimeDate = LocalDate.parse(showTimeDate, formatter)
+
+                val filterList = _showTimeList.value?.filter {
+                    it.movieId == movieId && LocalDate.parse(it.showTimeDate, formatter) >= parsedShowTimeDate
+                }
+                result.postValue(filterList ?: emptyList())
+            } catch (e: Exception) {
+                Log.e("Tag", "get show time by movieId and date: " + e.message)
+                result.postValue(emptyList())
+            }
+        }
+        return result
+    }
+//    fun getShowTimeByMovieIdAndDate(movieId: String, showTimeDate: String): LiveData<List<ShowTime>>{
+//        val result = MutableLiveData<List<ShowTime>>()
+//        viewModelScope.launch {
+//            try {
+////                val currentDate = SimpleDateFormat("EEE dd/MM/yyyy", Locale.getDefault()).format(Date())
+//                val filterList = _showTimeList.value?.filter { it.movieId == movieId && it.showTimeDate >= showTimeDate }
+//                result.postValue(filterList ?: emptyList())
+//            }catch (e: Exception){
+//                Log.e("Tag", "get show time by movieId and date: " + e.message)
+//                result.postValue(emptyList())
+//            }
+//        }
+//        return result
+//    }
     fun addShowTime(
         formData: ShowTimeFormData,
         onResult: (Boolean) -> Unit
