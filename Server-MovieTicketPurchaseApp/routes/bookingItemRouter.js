@@ -12,6 +12,7 @@ router.post("/add-booking-item", async (req, res) => {
         const newBookingItem = new BookingItem({
             bookingId: data.bookingId,
             itemId: data.itemId,
+            price: data.price,
             quantity: data.quantity
         });
         const result = await newBookingItem.save();
@@ -104,6 +105,7 @@ router.put("/update-booking-item/:id", async(req, res) =>{
 
         bookingItemToUpdate.bookingId = data.bookingId ?? bookingItemToUpdate.bookingId
         bookingItemToUpdate.itemId = data.itemId ?? bookingItemToUpdate.itemId
+        bookingItemToUpdate.price = data.price ?? bookingItemToUpdate.price
         bookingItemToUpdate.quantity = data.quantity ?? bookingItemToUpdate.quantity
 
         const result = await bookingItemToUpdate.save()
