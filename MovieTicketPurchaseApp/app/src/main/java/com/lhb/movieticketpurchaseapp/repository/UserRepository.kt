@@ -34,8 +34,17 @@ class UserRepository(private val retrofitService: RetrofitService) {
         val avatarPart = getFilePart("avatar",formData.avatar)
         return retrofitService.userService.updatePersonalInformation(id,mapRequestBody,avatarPart)
     }
-    suspend fun deleteAccount(id: String) = retrofitService.userService.deleteAccount(id)
+    suspend fun deleteAccount(id: String) = retrofitService.userService.removeUser(id)
     suspend fun getInfomationAccDetails(id: String) = retrofitService.userService.getAccountDetails(id)
+
+    suspend fun getAllUser() = retrofitService.userService.getAllUsers()
+
+    suspend fun addUser(user: UserFormData): Response<StatusResponse>{
+        return retrofitService.userService.addNewUser(user)
+    }
+    suspend fun updateUser(id: String, user: UserFormData): Response<StatusResponse>{
+        return retrofitService.userService.updateUser(id,user)
+    }
 
     // booking
     suspend fun createBooking(formData: BookingFormData): Response<StatusResponse2>{
@@ -72,6 +81,7 @@ class UserRepository(private val retrofitService: RetrofitService) {
     }
     suspend fun getAllTicket() = retrofitService.userService.getAllTicket()
     suspend fun getTicketById(id: String) = retrofitService.userService.getTicketById(id)
+    suspend fun getTicketByCode(ticketCode: String) = retrofitService.userService.getTicketByCode(ticketCode)
 
     // favourite
     suspend fun getFavouriteList() = retrofitService.userService.getAllFavourite()
@@ -79,4 +89,5 @@ class UserRepository(private val retrofitService: RetrofitService) {
         return retrofitService.userService.addFavourite(favourite)
     }
     suspend fun removeFavourite(id: String) = retrofitService.userService.removeFavourite(id)
+
 }

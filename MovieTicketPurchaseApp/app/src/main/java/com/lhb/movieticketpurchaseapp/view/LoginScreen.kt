@@ -223,7 +223,9 @@ fun LoginScreen(navController: NavController, userViewModel: UserViewModel) {
                                             }
                                         }
                                         if (it == 1) {
-                                            // nhan vien
+                                            navController.navigate(Screens.StaffHomeScreen.route){
+                                                popUpTo(Screens.LoginScreen.route){inclusive = true}
+                                            }
                                         }
                                         if (it == 2) {
                                             navController.navigate(Screens.UserBottomTav.route){

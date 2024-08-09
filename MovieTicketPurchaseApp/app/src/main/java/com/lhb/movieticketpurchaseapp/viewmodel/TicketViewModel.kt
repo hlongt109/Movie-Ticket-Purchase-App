@@ -166,6 +166,23 @@ class TicketViewModel(private val repository: UserRepository): ViewModel() {
         }
         return result
     }
+    fun getTicketByCode(ticketCode: String): LiveData<Ticket?>{
+        val result = MutableLiveData<Ticket?>()
+        viewModelScope.launch {
+            try {
+                val response = repository.getTicketByCode(ticketCode)
+                if(response.isSuccessful){
+                    result.postValue(response.body()?.toTicket())
+                }else{
+                    result.postValue(null)
+                }
+            }catch (e:Exception){
+                Log.e("Tag", "get ticket by code: " + e.message)
+                result.postValue(null)
+            }
+        }
+        return result
+    }
 }
 class TicketViewModelFactory(private val repository: UserRepository): ViewModelProvider.Factory{
     override fun <T: ViewModel> create(modelClass: Class<T>): T{

@@ -64,7 +64,7 @@ fun NewMovieList(navController: NavController, listMovies: List<Movie>) {
                     )
                 }
                 TextButton(
-                    onClick = { /*TODO*/ }
+                    onClick = { navController.navigate("${Screens.SeeAllScreen.route}/${1}") }
                 ) {
                     Text(
                         "See all",
@@ -88,14 +88,14 @@ fun NewMovieList(navController: NavController, listMovies: List<Movie>) {
                         ItemMovieFake()
                     }
                     item {
-                        ItemSeeAll(navController)
+                        ItemSeeAll(onClickToSeeAll = {})
                     }
                 } else {
                     itemsIndexed(listMovies.take(4)) { index, movie ->
                         ItemMovieUser(movie = movie, onClickToDetails = {navController.navigate("${Screens.DetailsScreen.route}/${movie.id}")})
                     }
                     item {
-                        ItemSeeAll(navController)
+                        ItemSeeAll(onClickToSeeAll = {navController.navigate("${Screens.SeeAllScreen.route}/${1}")})
                     }
                 }
             }

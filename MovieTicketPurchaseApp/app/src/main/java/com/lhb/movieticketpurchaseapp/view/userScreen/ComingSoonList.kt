@@ -68,7 +68,7 @@ fun ComingSoonList(navController: NavController, listMovies: List<Movie>) {
                     )
                 }
                 TextButton(
-                    onClick = { /*TODO*/ }
+                    onClick = { navController.navigate("${Screens.SeeAllScreen.route}/${0}") }
                 ) {
                     Text(
                         "See all",
@@ -92,14 +92,14 @@ fun ComingSoonList(navController: NavController, listMovies: List<Movie>) {
                         ItemMovieFake()
                     }
                     item {
-                        ItemSeeAll(navController)
+                        ItemSeeAll(onClickToSeeAll = {})
                     }
                 } else {
                     itemsIndexed(listMovies.take(8)) { index, movie ->
                         ItemMovieUser(movie = movie, onClickToDetails ={navController.navigate("${Screens.DetailsScreen.route}/${movie.id}")} )
                     }
                     item {
-                        ItemSeeAll(navController)
+                        ItemSeeAll(onClickToSeeAll = {navController.navigate("${Screens.SeeAllScreen.route}/${0}")})
                     }
                 }
             }

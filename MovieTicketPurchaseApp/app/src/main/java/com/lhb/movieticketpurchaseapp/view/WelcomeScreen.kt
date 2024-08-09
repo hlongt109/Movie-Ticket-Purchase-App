@@ -81,7 +81,9 @@ fun WelcomeScreen(navController: NavController, userViewModel: UserViewModel) {
                     }
 
                     1 -> {
-                        // nhân viên
+                        navController.navigate(Screens.StaffHomeScreen.route){
+                            popUpTo(Screens.WelcomeScreen.route){inclusive = true}
+                        }
                     }
 
                     2 -> {

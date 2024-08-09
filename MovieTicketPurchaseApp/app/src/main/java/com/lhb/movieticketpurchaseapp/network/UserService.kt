@@ -125,6 +125,9 @@ interface UserService {
   @GET("/api/get-ticket-details/{id}")
   suspend fun getTicketById(@Path("id")id: String): Response<TicketResponse>
 
+  @GET("/api/get-ticket-by-code/{ticketCode}")
+  suspend fun getTicketByCode(@Path("ticketCode")ticketCode: String): Response<TicketResponse>
+
   // favourite
   @GET("/api/get-favourite-list")
   suspend fun getAllFavourite(): Response<List<FavouriteResponse>>
@@ -134,4 +137,25 @@ interface UserService {
 
   @DELETE("/api/delete-favourite/{id}")
   suspend fun removeFavourite(@Path("id") id: String): Response<StatusResponse>
+
+  // user
+  @GET("/api/get-all-user")
+  suspend fun getAllUsers(): Response<List<UserResponse>>
+
+  @GET("/api/get-infomation-details/{id}")
+  suspend fun getAUser(@Path("id")id: String) : Response<UserResponse>
+
+  @POST("/api/add-user")
+  suspend fun addNewUser(
+    @Body user: UserFormData
+  ): Response<StatusResponse>
+
+  @PUT("/api/update-user/{id}")
+  suspend fun updateUser(
+    @Path("id") id: String,
+    @Body user: UserFormData
+  ): Response<StatusResponse>
+
+  @DELETE("/api/delete-account/{id}")
+  suspend fun removeUser(@Path("id") id: String) : Response<StatusResponse>
 }

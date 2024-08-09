@@ -16,8 +16,10 @@ import com.lhb.movieticketpurchaseapp.model.toUserLogin
 import com.lhb.movieticketpurchaseapp.repository.UserRepository
 import kotlinx.coroutines.launch
 
-class UserViewModel(private val repository: UserRepository, context: Context) :
-    ViewModel() {
+class UserViewModel(private val repository: UserRepository, context: Context) : ViewModel() {
+
+    private val _userList = MutableLiveData<List<User>>()
+    val listUser: LiveData<List<User>> = _userList
 
     private val sharedPreferences: SharedPreferences =
         context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
@@ -71,6 +73,43 @@ class UserViewModel(private val repository: UserRepository, context: Context) :
             }
         }
     }
+    init {
+        getAllUser()
+    }
+    fun getAllUser(){
+        viewModelScope.launch {
+            try {
+                val response = repository.getAllUser()
+                if(response.isSuccessful){
+                    _userList.postValue(response.body()?.map { it.toUser() })
+                }else{
+                    _userList.postValue(emptyList())
+                }
+            }catch (e: Exception){
+                Log.e("Tag", "get user list:" + e.message)
+                _userList.postValue(emptyList())
+            }
+        }
+    }
+    fun addUserAcc(
+        formData: UserFormData,
+        onResult: (Boolean) -> Unit
+    ){
+        viewModelScope.launch {
+            try {
+                val response = repository.addUser(formData)
+                if(response.isSuccessful && response.body()?.status == 200){
+                    getAllUser()
+                    onResult(true)
+                }else{
+                    onResult(false)
+                }
+            }catch (e: Exception){
+                Log.e("TAG", "add acc: "+e.message )
+                onResult(false)
+            }
+        }
+    }
     fun updateInfomationAccount(
         id: String,
         formData: UserFormData,
@@ -80,12 +119,33 @@ class UserViewModel(private val repository: UserRepository, context: Context) :
             try {
                 val response = repository.upadateInfomationAcount(id,formData)
                 if(response.isSuccessful && response.body()?.status == 200){
+                    getAllUser()
                     onResult(true)
                 }else{
                     onResult(false)
                 }
             }catch (e: Exception){
                 Log.e("TAG", "update information: "+e.message )
+                onResult(false)
+            }
+        }
+    }
+    fun updateUser(
+        id: String,
+        formData: UserFormData,
+        onResult: (Boolean) -> Unit
+    ){
+        viewModelScope.launch {
+            try {
+                val response = repository.updateUser(id,formData)
+                if(response.isSuccessful && response.body()?.status == 200){
+                    getAllUser()
+                    onResult(true)
+                }else{
+                    onResult(false)
+                }
+            }catch (e: Exception){
+                Log.e("TAG", "update user: "+e.message )
                 onResult(false)
             }
         }
@@ -98,6 +158,7 @@ class UserViewModel(private val repository: UserRepository, context: Context) :
             try {
                 val response = repository.deleteAccount(id)
                 if(response.isSuccessful && response.body()?.status == 200){
+                    getAllUser()
                     onResult(true)
                 }else{
                     onResult(false)

@@ -37,8 +37,12 @@ import com.lhb.movieticketpurchaseapp.view.adminScreens.formScreens.MovieGenreFo
 import com.lhb.movieticketpurchaseapp.view.adminScreens.formScreens.ShowTimeFormScreen
 import com.lhb.movieticketpurchaseapp.view.adminScreens.formScreens.TheaterFormScreens
 import com.lhb.movieticketpurchaseapp.view.adminScreens.formScreens.TimeFrameFormScreens
+import com.lhb.movieticketpurchaseapp.view.adminScreens.formScreens.UserFormScreen
 import com.lhb.movieticketpurchaseapp.view.components.DetailsScreen
+import com.lhb.movieticketpurchaseapp.view.staffScreens.CheckTicketScreen
+import com.lhb.movieticketpurchaseapp.view.staffScreens.StaffHomeScreen
 import com.lhb.movieticketpurchaseapp.view.userScreen.ChooseFoodDrinkScreen
+import com.lhb.movieticketpurchaseapp.view.userScreen.SeeAllMovieScreen
 import com.lhb.movieticketpurchaseapp.view.userScreen.TicketBookingScreen
 import com.lhb.movieticketpurchaseapp.viewmodel.BookingItemViewModel
 import com.lhb.movieticketpurchaseapp.viewmodel.BookingItemViewModelFactory
@@ -119,6 +123,7 @@ fun ScreenNavigation() {
         // bottomNav
         composable(Screens.UserBottomTav.route) { UserBottomTav(navController) }
         composable(Screens.AdminBottomTav.route) { AdminBottomTav(navController) }
+        composable(Screens.StaffHomeScreen.route){ StaffHomeScreen(navController) }
         // management
         composable(Screens.ManageMovieGenreScreen.route) { ManagementMovieGenreScreen(navController,movieGenreViewModel) }
         composable(Screens.ManageMovieScreen.route) { ManagementMovieScreen(navController, movieViewModel) }
@@ -129,8 +134,8 @@ fun ScreenNavigation() {
         composable(Screens.ManageFoodAndDrinkScreen.route) { ManagementFoodDrinkScreen(navController,foodDrinkViewModel) }
         composable(Screens.ManageTicketsScreen.route) { ManagementTicketScreen(navController) }
         composable(Screens.ManageMovieReviews.route) { ManagementMovieReviewsScreen(navController) }
-        composable(Screens.ManageStaffScreen.route) { ManagementStaffScreen(navController) }
-        composable(Screens.ManageUsersScreen.route) { ManagementUserScreen(navController) }
+        composable(Screens.ManageStaffScreen.route) { ManagementStaffScreen(navController,userViewModel) }
+        composable(Screens.ManageUsersScreen.route) { ManagementUserScreen(navController,userViewModel) }
         composable(
             "${Screens.ManageHallScreen.route}/{theaterId}/{theaterName}",
             arguments = listOf(
@@ -164,6 +169,15 @@ fun ScreenNavigation() {
             DetailsScreen(idMovie = backStackEntry.arguments?.getString("id")?:"", navController, movieViewModel,favouriteViewModel,userViewModel)
         }
         // ====== form =======
+        composable(Screens.ADD_Staff_Form.route){ UserFormScreen(idUpdate = "", navController, userViewModel)}
+        composable(
+            "${Screens.UPDATE_Staff_Form.route}/{id}",
+            arguments = listOf(navArgument("id"){type = NavType.StringType})
+        ){ backStackEntry ->
+            val idUpdate = backStackEntry.arguments?.getString("id")
+            idUpdate?.let { UserFormScreen(idUpdate = idUpdate, navController, userViewModel) }
+        }
+        //
         composable(Screens.ADD_MovieGenre_Form.route) { MovieGenreFormScreen(idUpdate = "", navController, movieGenreViewModel) }
         composable(
             "${Screens.UPDATE_MovieGenre_Form.route}/{id}",
@@ -249,5 +263,27 @@ fun ScreenNavigation() {
                 navController, movieViewModel, theaterViewModel, foodDrinkViewModel,showTimeViewModel,bookingViewModel,bookingItemViewModel,timeFrameViewModel,userViewModel,ticketViewModel,paymentViewModel)
         }
         composable(Screens.ChooseItemScreen.route){ ChooseFoodDrinkScreen(navController,foodDrinkViewModel,bookingItemViewModel)}
+
+        //
+        composable(
+            "${Screens.SeeAllScreen.route}/{status}",
+            arguments = listOf(navArgument("status"){type = NavType.IntType})
+        ){ backStackEntry ->
+            SeeAllMovieScreen(
+                status = backStackEntry.arguments?.getInt("status")?: -1,
+                movieViewModel ,
+                navController)
+        }
+        composable(Screens.CheckTicketScreen.route){ CheckTicketScreen(
+            navController,
+            ticketViewModel,
+            userViewModel,
+            bookingViewModel,
+            showTimeViewModel,
+            timeFrameViewModel,
+            bookingItemViewModel,
+            foodDrinkViewModel,
+            theaterViewModel
+        )}
     }
 }

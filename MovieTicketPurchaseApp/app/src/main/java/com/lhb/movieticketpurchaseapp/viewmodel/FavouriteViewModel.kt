@@ -34,6 +34,19 @@ class FavouriteViewModel(private val repository: UserRepository): ViewModel() {
             }
         }
     }
+    fun getFavouriteListByUserId(userId: String): LiveData<List<Favourite>?>{
+        val result = MutableLiveData<List<Favourite>?>()
+        viewModelScope.launch {
+            try {
+                val filterList = _favouriteState.value?.filter { it.userId == userId }
+                result.postValue(filterList)
+            }catch (e: Exception){
+                Log.e("TAG", "getFavouriteByUserId: "+e.message )
+                result.postValue(emptyList())
+            }
+        }
+        return result
+    }
     fun addFavorite(
         formData: FavouriteFormData,
         onResult: (Boolean) -> Unit

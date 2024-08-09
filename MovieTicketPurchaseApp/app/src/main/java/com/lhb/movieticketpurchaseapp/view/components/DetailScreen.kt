@@ -85,17 +85,22 @@ fun DetailsScreen(
     userViewModel: UserViewModel
 ) {
     val userId = userViewModel.getUserId().toString()
-    val movieState = if (idMovie != "") movieViewModel.getMovieById(idMovie).observeAsState(initial = null).value else null
+    val movieState = if (idMovie != "") movieViewModel.getMovieById(idMovie)
+        .observeAsState(initial = null).value else null
 
     var refreshTrigger by remember { mutableStateOf(false) }
+
+    LaunchedEffect(movieState, refreshTrigger) {
+        favouriteViewModel.getFavourite(movieState?.id ?: "", userId)
+    }
 
     LaunchedEffect(refreshTrigger) {
         favouriteViewModel.getFavourite(movieState?.id ?: "", userId)
     }
 
-    val getFavorite = favouriteViewModel.getFavourite(movieState?.id ?: "", userId).observeAsState(initial = null).value
+    val getFavorite by favouriteViewModel.getFavourite(movieState?.id ?: "", userId).observeAsState(initial = null)
 
-    var formData by remember(movieState) {
+    val formData by remember(movieState) {
         mutableStateOf(movieState?.toFormData() ?: MovieFormData())
     }
 
@@ -104,6 +109,7 @@ fun DetailsScreen(
     }
 
     var expanded by remember { mutableStateOf(false) }
+
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     Scaffold(
@@ -111,28 +117,31 @@ fun DetailsScreen(
         modifier = Modifier.statusBarsPadding(),
         topBar = {
             TopBarDetail(
-                isFavourite = if(getFavorite != null) true else false,
+                isFavourite = getFavorite != null,
                 onBackClick = { navController.popBackStack() },
                 onFavouriteClick = {
-                    if(getFavorite != null){
-                        favouriteViewModel.removeFavorite(getFavorite.id){result ->
-                            coroutineScope.launch {
-                                if(result){
+                    coroutineScope.launch {
+                        if (getFavorite != null) {
+                            favouriteViewModel.removeFavorite(getFavorite?.id ?: "") { result ->
+                                if (result) {
                                     Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show()
                                     refreshTrigger = !refreshTrigger
-                                }else{
+                                } else {
                                     Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
                                 }
                             }
-                        }
-                    }else{
-                        favouriteViewModel.addFavorite(favouriteFormData){result ->
-                            coroutineScope.launch {
-                                if(result){
-                                    Toast.makeText(context, "Add favourite successfully", Toast.LENGTH_SHORT).show()
+                        } else {
+                            favouriteViewModel.addFavorite(favouriteFormData) { result ->
+                                if (result) {
+                                    Toast.makeText(
+                                        context,
+                                        "Add favourite successfully",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                     refreshTrigger = !refreshTrigger
-                                }else{
-                                    Toast.makeText(context, "Add favourite failed", Toast.LENGTH_SHORT).show()
+                                } else {
+                                    Toast.makeText(context, "Add favourite failed", Toast.LENGTH_SHORT)
+                                        .show()
                                 }
                             }
                         }
@@ -367,7 +376,7 @@ fun DetailsScreen(
                         .background(Color.Gray),
                     contentAlignment = Alignment.Center,
                 ) {
-                   ImageGallery(images = formData.images)
+                    ImageGallery(images = formData.images)
                 }
             }
         }
@@ -387,9 +396,9 @@ fun RatingStars(rating: Double) {
         horizontalArrangement = Arrangement.spacedBy(2.dp)
     ) {
         for (i in 1..5) {
-            val imageVector = when{
+            val imageVector = when {
                 i <= rating -> fullStar
-                i - rating < 1 ->  startHalf
+                i - rating < 1 -> startHalf
                 else -> emptyStar
             }
             Icon(
@@ -401,6 +410,7 @@ fun RatingStars(rating: Double) {
         }
     }
 }
+
 @Composable
 fun ImageGallery(images: List<String>) {
     Box(

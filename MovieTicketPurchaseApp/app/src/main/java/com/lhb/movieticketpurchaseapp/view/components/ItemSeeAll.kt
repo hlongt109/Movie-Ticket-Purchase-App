@@ -25,14 +25,16 @@ import androidx.navigation.NavController
 import com.lhb.movieticketpurchaseapp.ui.theme.Inter
 
 @Composable
-fun ItemSeeAll(navController: NavController) {
+fun ItemSeeAll(
+    onClickToSeeAll: () -> Unit
+) {
     Box(
         modifier = Modifier
             .width(150.dp)
             .height(190.dp)
             .clip(RoundedCornerShape(12.dp))
             .background(Color(0xff14111e))
-            .clickable { }
+            .clickable { onClickToSeeAll()}
     ) {
         Column(
             modifier = Modifier.align(Alignment.Center),

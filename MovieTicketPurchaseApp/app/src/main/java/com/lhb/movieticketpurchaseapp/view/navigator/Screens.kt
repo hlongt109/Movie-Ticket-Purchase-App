@@ -7,6 +7,7 @@ enum class Screens(val route: String) {
     // nav
     UserBottomTav("UserBottomTav"),
     AdminBottomTav("AdminBottomTav"),
+    StaffHomeScreen("StaffHomeScreen"),
     // admin
     ManageMovieScreen("ManageMovieScreen"),
     ManageMovieGenreScreen("ManageMovieGenreScreen"),
@@ -42,5 +43,7 @@ enum class Screens(val route: String) {
     UPDATE_TimeFrame_Form("UpdateTimeFrame"),
     //
     BookingScreen("BookingScreen"),
-    ChooseItemScreen("ChooseItemScreen")
+    ChooseItemScreen("ChooseItemScreen"),
+    SeeAllScreen("SeeAllScreen"),
+    CheckTicketScreen("CheckTicketScreen")
 }

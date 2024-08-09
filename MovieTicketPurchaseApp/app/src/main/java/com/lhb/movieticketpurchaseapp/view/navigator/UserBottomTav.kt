@@ -39,6 +39,8 @@ import com.lhb.movieticketpurchaseapp.viewmodel.BookingItemViewModel
 import com.lhb.movieticketpurchaseapp.viewmodel.BookingItemViewModelFactory
 import com.lhb.movieticketpurchaseapp.viewmodel.BookingViewModel
 import com.lhb.movieticketpurchaseapp.viewmodel.BookingViewModelFactory
+import com.lhb.movieticketpurchaseapp.viewmodel.FavouriteViewModel
+import com.lhb.movieticketpurchaseapp.viewmodel.FavouriteViewModelFactory
 import com.lhb.movieticketpurchaseapp.viewmodel.FoodDrinkModelFactory
 import com.lhb.movieticketpurchaseapp.viewmodel.FoodDrinkViewModel
 import com.lhb.movieticketpurchaseapp.viewmodel.MovieGenreViewModel
@@ -85,6 +87,8 @@ fun UserBottomTav(navController: NavController){
     val bookingItemViewModel: BookingItemViewModel = viewModel(factory = bookingItemFactory)
     val userFactory = UserViewModelFactory(userRepository,context)
     val userViewModel: UserViewModel = viewModel(factory = userFactory)
+    val favouriteFactory = FavouriteViewModelFactory(userRepository)
+    val favouriteViewModel: FavouriteViewModel = viewModel(factory = favouriteFactory)
 
     Scaffold(
         bottomBar = {
@@ -152,7 +156,7 @@ fun UserBottomTav(navController: NavController){
                 top = paddingValues.calculateTopPadding(),
                 end = paddingValues.calculateEndPadding(LayoutDirection.Ltr))
         ){
-            composable(BottomBarScreens.UserFavouriteScreen.screen){ FavouriteUserScreen(navController)}
+            composable(BottomBarScreens.UserFavouriteScreen.screen){ FavouriteUserScreen(navController, favouriteViewModel,userViewModel,movieViewModel)}
             composable(BottomBarScreens.UserHomeScreen.screen){ HomeUserScreen(navController,movieViewModel, movieGenreViewModel)}
             composable(BottomBarScreens.UserTicketScreen.screen){ TicketUserScreen(navController, ticketViewModel,
                 bookingViewModel,
