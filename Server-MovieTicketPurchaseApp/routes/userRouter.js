@@ -234,20 +234,20 @@ router.put("update-personal-information/:id", UploadFile.single("avatar"), async
     }
 })
 // delete
-router.get("/delete-account/:id", async (req, res) => {
+router.delete("/delete-account/:id", async (req, res) => {
     try {
         const { id } = req.params
         const result = await User.findByIdAndDelete(id);
         if (result) {
             res.json({
                 "status": 200,
-                "messenger": "Accpunt deleted successfully",
+                "messenger": "Account deleted successfully",
                 "data": result
             })
         } else {
             res.json({
                 "status": 400,
-                "messenger": "Error, Accpunt deletion failed",
+                "messenger": "Error, Account deletion failed",
                 "data": []
             })
         }
@@ -273,6 +273,108 @@ router.get("/get-infomation-details/:id", async (req, res) => {
         }
 
         res.status(200).send(user)
+    } catch (error) {
+        console.error("Error: " + error);
+        res.status(500).json({
+            "status": 500,
+            "message": "Server error",
+            "error": error.message
+        });
+    }
+})
+router.get("/get-all-user", async (req, res) =>{
+    try {
+        const data = await User.find();
+        if (data) {
+            res.status(200).send(data)
+        } else {
+            res.json({
+                "status": 400,
+                "messenger": "Get user list failed",
+                "data": []
+            })
+        }
+    } catch (error) {
+        console.error("Error: " + error);
+        res.status(500).json({
+            "status": 500,
+            "message": "Server error",
+            "error": error.message
+        });
+    }
+})
+router.post("/add-user", async (req, res) => {
+    try {
+        const data = req.body
+
+        const user = new User({
+            username: data.username,
+            name: data.name,
+            email: data.email,
+            password: data.password,
+            role: data.role,
+            avatar: data.avatar,
+            phoneNumber: data.phoneNumber
+        })
+        const result = await user.save()
+
+        if (result) {
+            res.json({
+                "status": 200,
+                "message": "Add user successfully",
+            });
+        } else {
+            res.json({
+                "status": 400,
+                "message": "Error, Add user failed",
+            });
+        }
+    } catch (error) {
+        console.error("Error: " + error);
+        res.status(500).json({
+            "status": 500,
+            "message": "Server error",
+            "error": error.message
+        });
+    }
+})
+router.put("/update-user/:id",async(req, res) =>{
+    try {
+        const {id} = req.params
+        const data = req.body;
+
+        const user = await User.findById(id)
+        if(!user){
+            return res.status(404).json({
+                status: 404,
+                messenger: 'No user found to update',
+                data: []
+            });
+        }
+
+        user.username = data.username ?? user.username
+        user.name = data.name ?? user.name;
+        user.email = data.email ?? user.email;
+        user.password = data.password ?? user.password;
+        user.role = data.role ?? user.role;
+        user.avatar = data.avatar ?? user.avatar;
+        user.phoneNumber = data.phoneNumber ?? user.phoneNumber;
+
+        const result = await user.save()
+
+        if (result) {
+            res.json({
+                status: 200,
+                messenger: 'user update successfully',
+                data: result
+            });
+        } else {
+            res.json({
+                status: 400,
+                messenger: 'user update failed',
+                data: []
+            });
+        }
     } catch (error) {
         console.error("Error: " + error);
         res.status(500).json({

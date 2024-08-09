@@ -98,7 +98,7 @@ router.put("/update-ticket/:id", async(req, res) =>{
         const data = req.body;
 
         const ticket = await Ticket.findById(id)
-        if (!showtime) {
+        if (!ticket) {
             return res.status(404).json({
                 status: 404,
                 messenger: 'No ticket found to update',
@@ -114,7 +114,7 @@ router.put("/update-ticket/:id", async(req, res) =>{
         ticket.expirationDate = data.expirationDate ?? ticket.expirationDate
         ticket.status = data.status ?? ticket.status
 
-        const result = await showtime.save()
+        const result = await ticket.save()
 
         if (result) {
             res.json({
@@ -161,5 +161,28 @@ router.get("/get-ticket-details/:id", async(req, res) =>{
         });
     }
 })
+
+router.get("/get-ticket-by-code/:ticketCode", async (req, res) => {
+    try {
+        const { ticketCode } = req.params;
+        const ticket = await Ticket.findOne({ ticketCode: ticketCode });
+
+        if (!ticket) {
+            return res.status(404).json({
+                status: 404,
+                messenger: 'Ticket not found'
+            });
+        }
+
+        res.status(200).send(ticket);
+    } catch (error) {
+        console.error("Error: " + error);
+        res.status(500).json({
+            "status": 500,
+            "message": "Server error",
+            "error": error.message
+        });
+    }
+});
 
 module.exports = router;
