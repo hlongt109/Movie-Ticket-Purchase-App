@@ -1,6 +1,7 @@
 const mongooes = require('mongoose');
 mongooes.set('strictQuery' , true)
-const url_db = "mongodb://127.0.0.1:27017/Movie_Ticket_Purchase_App"
+// const url_db = "mongodb://127.0.0.1:27017/Movie_Ticket_Purchase_App"
+const url_db = "mongodb+srv://longdz:K5dKUPxZ1sUmnxD8@databasecolections.w9guq.mongodb.net/?retryWrites=true&w=majority&appName=DatabaseColections"
 const connect = async () =>{
     try {
         await mongooes.connect(url_db)
